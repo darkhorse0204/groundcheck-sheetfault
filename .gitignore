@@ -1,0 +1,14 @@
+node_modules/
+*.log
+eval/results/e1b_*.rows.json
+paper/*.aux
+paper/*.bbl
+paper/*.blg
+paper/*.out
+paper/*.toc
+paper/build/
+# annotation files embed text from CC BY-SA workbooks; selftests leave nothing behind but be safe
+eval/annotation/out/
+eval/annotation/selftest_out/
+eval/gsheets/selftest_*
+eval/results/e5_pilot_*.log

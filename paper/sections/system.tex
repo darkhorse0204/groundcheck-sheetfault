@@ -1,0 +1,32 @@
+\section{System}
+\label{sec:system}
+
+We study an open-source Google Sheets add-on in Apps Script (about 9{,}400 lines of JavaScript, 163 unit tests). A user types a request; the assistant plans, asks for approval if the plan writes, executes through a registry of typed tools, and writes into the workbook (Figure~\ref{fig:arch}).
+
+\input{figures/arch}
+
+\subsection{Grounded verification (\gc)}
+\label{sec:gc}
+Each candidate formula is parsed into a typed AST by a small recursive-descent parser (the earlier verifier matched regular expressions against raw text) and checked in six deterministic layers that read only the open workbook:
+\begin{enumerate}\itemsep0pt\topsep0pt
+\item \textbf{Structural.} Leading \code{=}, balanced quotes and parentheses outside string literals, injection patterns, successful parse.
+\item \textbf{Symbols.} Referenced sheets exist (case-insensitively, as in Sheets); a bare identifier is a function, named range or \code{LET}/\code{LAMBDA} variable (a header used as a name is rejected with the column's letters as a hint); function names within edit distance 1--2 of a real one are errors with ``did you mean'', other unknown names are warnings (custom functions); \code{QUERY} column letters exist.
+\item \textbf{Bounds.} Each reference is checked against the extent of \emph{the sheet it points at}. A range wholly beyond the used columns is an error; one that merely extends past the last data row is headroom (a note); \code{COUNTA}, \code{COUNTBLANK} and \code{ISBLANK} may point at empty cells.
+\item \textbf{Shape.} Argument counts for about 90 functions, lookup indices beyond the lookup range, literal \code{INDEX} positions, unequal range sizes in \code{SUMIFS}, \code{COUNTIFS}, \code{SUMIF}, \code{SUMPRODUCT}.
+\item \textbf{Grounding.} Numeric aggregates over a text column; criteria and lookup keys that never occur in the column they search. The workbook proves neither impossible, so they are \emph{suspicious}: warnings with the column's real values as the hint, optionally sent to repair.
+\item \textbf{Circularity.} The target cell lies inside a referenced range (\code{=SUM(F2:F81)} typed into F81, \code{=SUM(F:F)} into column F) or on a dependency chain through other formulas, where range dependencies are expanded to the formula cells inside them; \code{ROW}, \code{ROWS}, \code{COLUMN}, \code{COLUMNS} read only geometry and add no dependency.
+\end{enumerate}
+\input{figures/anatomy}
+Errors make a formula \emph{invalid} and trigger a retry (Figure~\ref{fig:anatomy} walks through an example). The verifier cannot know whether a formula answers the question: \code{=SUM(Quantity)} over the wrong numeric column is valid and wrong. After a failed attempt the formula and the layers' errors, warnings and hints (``Column ``Revenue'' is column D'', ``values in that column include East, West, North'') are appended to the conversation; temperature decays from 0.2 to 0.1 to 0 over at most two retries.
+
+\subsection{What a workbook can decide}
+\label{sec:levels}
+A candidate formula can be wrong in ways that differ in how much of the workbook is needed to see it (Table~\ref{tab:levels}). Whether it parses, whether the names it uses exist, whether its ranges lie inside the data, whether its arguments fit the function, and whether it sits on a cycle can all be decided from the workbook alone. Whether a criterion matches the data can be decided only as a \emph{suspicion}, since a value missing from a column may be intended. Whether a valid formula answers the user's question cannot be decided without the user's intent: \code{=SUM(Quantity)} over the wrong numeric column parses, names real things, fits, is acyclic and matches the data. \gc{} works on the first five levels and leaves the last to the user. The experiments probe exactly this boundary, and we use the distinction between \emph{loud} faults (the cell shows an error) and \emph{silent} ones (a plausible but wrong value) to measure it.
+
+\input{generated/tab_levels}
+
+\subsection{Retrieval and the fetch boundary}
+\label{sec:retrieval}
+A deterministic analyzer splits the workbook into tables with inferred types and statistics, builds a formula dependency graph, and emits one chunk per table listing each column's \emph{letter}, type and statistics and the data-row span (a first version listed headers only; Section~\ref{sec:e5} shows why that failed). Seven signals score chunks against the request (active sheet, referenced by the active cell's formula, lexical overlap, shared headers, neighbouring table, graph proximity, conversation overlap) and a greedy knapsack fills a token budget. In the original add-on this context reached the planner but not the formula agent; we pass it on.
+
+As a secondary component, the same idea of checking before acting applies where an LLM-chosen string leaves the add-on, the fetch tool, the setting of server-side request forgery (SSRF)~\cite{owaspssrf}. The original filter matched regular expressions against the whole URL. Our validator parses it and classifies the \emph{host}: IPv4 in any \code{inet\_aton} form, IPv6 including IPv4-mapped, NAT64 and 6to4, the reserved ranges of RFC~6890~\cite{rfc6890}, single-label and internal-only names, wildcard-DNS services, embedded credentials, and characters on which URL parsers disagree. Redirects are not auto-followed: every hop is re-validated. A static check cannot see DNS rebinding.

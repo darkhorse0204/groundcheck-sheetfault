@@ -1,0 +1,67 @@
+We run the production formula agent with two local models, \efAName{} and \efBName, and three hosted ones, \efDName, \efEName{} and \efFName{} (Section~\ref{sec:e5method}). With the final system the first attempt is correct for \efAfinal\% of the \efAN{} tasks with \efAName{} and \efBfinal\% with \efBName; the hosted models reach \efDfinal\% (\efDN{} tasks), \efEfinal\% (\efEN) and \efFfinal\% (\efFN).
+
+\paragraph{Retrieved context needs column letters}
+\input{generated/tab_e5_context}
+With the shipped active-sheet context \efAName{} reaches \efAflat\% at attempt 1 (Table~\ref{tab:e5-context}). Adding the ranked context in the chunk format the add-on shipped \emph{lowered} accuracy to \efAshipped\% (\efATestshippedvsflatB{} tasks favour the active sheet alone, \efATestshippedvsflatA{} the retrieved context; $p$ \efATestshippedvsflatP, exact McNemar). Those chunks listed columns by header only, so the model guessed letters (a silently wrong numeric column), wrote headers as names (\code{COUNTIF(Lead Time,">31")}) or invented functions. With each column's letter and the data-row span in the chunk, accuracy is \efAfinal\% ($p$ \efATestfinalvsshippedP{} against the shipped format), indistinguishable from the active sheet alone ($p$ \efATestfinalvsflatP): retrieval does not help on tasks that read the active sheet; its purpose is cross-sheet requests. There the first attempt is correct \efAfinalLookup\% of the time on the \efAfinalLookupN{} lookup tasks, because of the prompt rather than the context: \efALkSheetTwo{} of \efALkN{} attempts copied \code{Sheet2} from the agent's own worked example (Section~\ref{sec:discussion}). For the hosted models the retrieved context is what matters: it raises accuracy from \efDflat\%, \efEflat\% and \efFflat\% with the active sheet alone to \efDfinal\%, \efEfinal\% and \efFfinal\%, almost entirely on cross-sheet lookups (\efDflatLookup\% to \efDfinalLookup\% for \efDName).
+\ifdefined\efCN
+\emph{Held-out confirmation.} On \efCN{} tasks from fresh workbooks the final chunk format gives \efCfinal\% at attempt 1 against \efCflat\% for the active sheet alone ($p$ \efCTestfinalvsflatP), the same picture as on the main set. \gc{} feedback raises it to \efCSvtwofb\% ($+$\efCSvtwofbD{} points, Holm-adjusted $p$ \hmCHolmVtwoRes{} against resampling) and, with suspicious findings, to \efCSvtwofbplussusp\% ($p$ \hmCHolmSuspRes): the same direction with less power.
+\fi
+
+\paragraph{What verification sees}
+Of the \efAWrong{} formulas \efAName{} gets wrong at attempt 1, \efALoud{} (\efALoudShare\%) are loud and \efASilent{} are silent (Figure~\ref{fig:e5-taxonomy}; Table~\ref{tab:e5-taxonomy}, Appendix~\ref{app:results}). \gc{} rejects \efACaughtTwo{} of them (the shipped verifier \efACaughtOne{}) and flags \efAFlagTwo{} in all; it rejects none of the silent ones and flags \efASilentFlagTwo{}. None of the \efANCorrect{} correct formulas is rejected. The rejections are concentrated: 29 of the 35 are references to a sheet that does not exist (the \code{Sheet2} copies), which both verifiers catch, so the large recall gap of Section~\ref{sec:e1} does not appear here; the natural faults of these models fall mostly in classes that the shipped verifier already handles. Using the verifier as an acceptance gate, the \efAGateAccN{} accepted formulas are correct \efAGateAcc\% of the time and the \efAGateRejN{} rejected ones \efAGateRej\%. The hosted models make \efDWrong, \efEWrong{} and \efFWrong{} wrong first attempts; \gc{} rejects \efDCaughtTwo, \efECaughtTwo{} and \efFCaughtTwo{} of them and no correct formula (\efDFalseAlarm, \efEFalseAlarm{} and \efFFalseAlarm{} false alarms).
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig_e5_taxonomy}
+\caption{What verification sees among the formulas each model gets wrong at attempt 1 (final system). Numbers are formulas.}
+\label{fig:e5-taxonomy}
+\end{figure}
+
+\paragraph{Repair}
+\input{generated/tab_e5_repair}
+Table~\ref{tab:e5-repair} and Figure~\ref{fig:e5} compare feedback strategies from the same first attempt. Asking again without feedback repairs almost nothing (\efASresample\%, $+$\efASresampleD{} points); a generic ``try again'' message gives \efASgeneric\% ($+$\efASgenericD{}); diagnostics from the shipped verifier \efASvonefb\% ($+$\efASvonefbD{}); and \gc{} diagnostics \efASvtwofb\% ($+$\efASvtwofbD{} points, 95\% interval [\efASvtwofbLo, \efASvtwofbHi]; \efASvtwofbFixed{} tasks fixed, none broken), better than resampling (Holm-adjusted $p$ \hmAHolmVtwoRes) and than the generic message ($p$ \hmAHolmVtwoGen). Also repairing on suspicious findings reaches \efASvtwofbplussusp\% ($+$\efASvtwofbplussuspD{}). The feedback of the two verifiers is not distinguishable here ($p$ \hmAHolmVtwoVone; they fix \efASvtwofbFixed{} and \efASvonefbFixed{} tasks), for the reason given above. The ordering is the same with the shipped chunk format (Table~\ref{tab:e5-repair-shipped}). Repair costs about \efAExtravtwofb{} extra model calls per task. The hosted models are absent from Table~\ref{tab:e5-repair} because they rarely give the verifier anything to reject.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig_e5_repair}
+\caption{Execution accuracy after repair (GC: \gc) for the models whose attempts the verifier rejects often enough to compare strategies. Dashed lines: accuracy at attempt 1; error bars: 95\% Wilson intervals.}
+\label{fig:e5}
+\end{figure}
+
+\paragraph{Run-to-run variation}
+\ifdefined\sdASeeds
+One sampled trajectory per task could mislead, so we reran the local models on the same tasks with \sdASeeds{} sampling seeds (Table~\ref{tab:e5-seeds}). Accuracy at attempt 1 with retrieved context is \sdARetr\% (SD \sdARetrSD{} points) for \efAName{} and \sdBRetr\% (SD \sdBRetrSD) for \efBName: the seed moves a model's accuracy by about a point, less than the differences between context formats or repair strategies that we interpret. For \efAName{} \gc{} feedback beats plain resampling in \sdASeedsBeat{} of \sdASeeds{} seeds, by \sdADvtwofbresample{} points on average over seeds and tasks (task-clustered 95\% interval [\sdADvtwofbresampleLo, \sdADvtwofbresampleHi]); against the shipped verifier's feedback the difference is \sdADvtwofbvonefb{} points [\sdADvtwofbvonefbLo, \sdADvtwofbvonefbHi]. For \efBName{} \gc{} feedback also beats resampling in \sdBSeedsBeat{} of \sdBSeeds{} seeds, but by only \sdBDvtwofbresample{} points [\sdBDvtwofbresampleLo, \sdBDvtwofbresampleHi]: a small effect that a single run (Table~\ref{tab:e5-repair}) cannot resolve.
+
+\input{generated/tab_e5_seeds}
+\else
+Further sampling seeds were not run for this version.
+\fi
+
+\paragraph{Does repair make failures safer?}
+Accuracy counts whether the final cell is right and says nothing about what the wrong cells look like. Table~\ref{tab:e5-harm} accounts for every task under three policies. With \efAName, writing the first attempt unchecked leaves \hmAAsIsLoud{} cells that show an error and \hmAAsIsSilent{} that show a plausible wrong value, out of \hmAN. Withholding what \gc{} rejects, without repair, holds back \hmABlockWithheld{} formulas, all of them wrong (\hmAFalseWithheld{} correct formulas withheld), and leaves the silent errors as they were. Repairing with \gc{} feedback (Figure~\ref{fig:e5-fate}) fixes \hmAUnsafeVtwoFixed{} of the \hmAUnsafeN{} rejected attempts, but of the others \hmAUnsafeVtwo{} end as plausible wrong values and \hmAUnsafeVtwoLoud{} still show an error: the \emph{unsafe-repair rate} is \hmAUnsafeVtwoRate\% (shipped feedback: \hmAUnsafeVoneRate\%; resampling: \hmAUnsafeResRate\%, because it rarely changes anything). As a result the silent errors \emph{rise}, from \hmAAsIsSilent{} to \hmARepVtwoSilent, while the visible errors fall from \hmAAsIsLoud{} to \hmARepVtwoLoud. The picture is the same for \efBName{} (silent \hmBAsIsSilent{} to \hmBRepVtwoSilent, unsafe-repair rate \hmBUnsafeVtwoRate\%) and on the held-out tasks (\hmCAsIsSilent{} to \hmCRepVtwoSilent). \ifdefined\sdASeeds It holds across seeds: the unsafe-repair rate of \efAName{} averages \sdAUnsafevtwofb\% over the \sdASeeds{} seeds, ranging from \sdAUnsafevtwofbMin\% to \sdAUnsafevtwofbMax\%.\fi
+
+\input{generated/tab_e5_harm}
+
+Verification-guided repair therefore raises accuracy by turning some visible failures into correct formulas and others into invisible ones: of the visible errors it removes, only part become right. Blocking and showing the diagnostics has no such side effect, and the case for repair rests on how much a user's attention is worth. Since the outcome of a repaired formula is a valid-looking value, we regard an execution check, or showing the computed value next to the request, as the natural next step. An execution check in a scratch cell would catch the cells that show an error (\hmAAsIsLoud{} before repair and \hmARepVtwoLoud{} after, for \efAName) but none of the silent ones, which only the computed value, read against the request, can expose.
+
+\ifdefined\exASame
+\emph{Adding an execution check.} The cells that still show an error after repair are loud faults the workbook-state checks did not see. We therefore added a second stage to the pipeline, verify, repair, \emph{execute}: after \gc{} accepts a formula, it is evaluated in the workbook (in the add-on, in a scratch cell) and an error is sent back to the model (Table~\ref{tab:e5-exec}; first attempts regenerated with the same seed reproduced the stored one for \exASame{} of \exATotal{} tasks of \efAName). Of the \exALoudAfter{} cells that still show an error after \gc{} repair, the execution check fixes \exALoudFixed{}, leaves \exALoudStill{} and turns \exALoudToSilent{} into plausible wrong values; overall \exAExecCorrect{} formulas are right against \exAVtwoCorrect{} with repair alone (+\exAGained{}/$-$\exALost{} tasks, $p$ \exAP), and silent errors go from \exAVtwoSilent{} to \exAExecSilent. For \efBName{} (\exBSame{} tasks) the check fixes \exBLoudFixed{} of the \exBLoudAfter{} cells that still show an error after repair and turns \exBLoudToSilent{} into plausible wrong values; silent errors go from \exBVtwoSilent{} to \exBExecSilent. The check removes some visible errors but no silent ones: it cannot see them, and repairing an error can again produce a plausible wrong value, so the number of silent errors does not fall.
+
+\input{generated/tab_e5_exec}
+\fi
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig_e5_repair_fate}
+\caption{Outcome of repair for the attempts \gc{} rejected, by strategy: right, a plausible but wrong value (silent), or an error still shown. Numbers are attempts; segments under 9\% are unlabelled.}
+\label{fig:e5-fate}
+\end{figure}
+
+\paragraph{Where the models fail}
+Accuracy by task template (Figure~\ref{fig:e5-templates}, Appendix~\ref{app:results}) shows the pattern behind the totals. The local models fail on the same few templates: \efATemplateZero{} of the \efNTemplates{} templates (the cross-sheet lookup) is solved on fewer than one task in twenty by \efAName{} and \efBTemplateZero{} by \efBName, whereas the hosted models' lowest template accuracies are \efDTemplateMin\%, \efETemplateMin\% and \efFTemplateMin\%. Requests that paraphrase the column names instead of quoting the headers are harder for the two local models on the main set (\efAFormS\% against \efAFormH\% for \efAName, \efBFormS\% against \efBFormH\% for \efBName) but not on the held-out set (\efCFormS\% against \efCFormH\%); we do not read more into it.
+\ifdefined\efBN
+\paragraph{A smaller model}
+\efBName{} is correct at attempt 1 in \efBfinal\% of tasks (\efBflat\% with the active sheet only, $p$ \efBTestfinalvsflatP). It makes more of the errors that only \gc{} sees: the verifier rejects \efBCaughtTwo{} of its \efBWrong{} wrong first attempts, against \efBCaughtOne{} for the shipped one. But it makes little use of the feedback. In the main run repair raises accuracy by \efBSvtwofbD{} points ($p$ \efBSvtwofbP{} against attempt 1; \efBSvtwofbFixed{} tasks fixed), which no strategy distinguishes from resampling (Table~\ref{tab:e5-repair}); only the average over seeds resolves a gain of about a point. Feedback needs a model able to act on it. As an acceptance gate the verifier still separates the two groups: formulas it accepts are correct \efBGateAcc\% of the time and those it rejects \efBGateRej\%.
+\fi
+\paragraph{Hosted models}
+The hosted models are right at attempt 1 on \efDfinal\%, \efEfinal\% and \efFfinal\% of their tasks (\efDflat\%, \efEflat\% and \efFflat\% with the active sheet only), so they leave the verifier almost nothing to do: they make few errors, most of them silent (\efDSilent{} of \efDWrong, \efESilent{} of \efEWrong, \efFSilent{} of \efFWrong), and no repair strategy has anything to repair. For models this accurate on these tasks the verifier is a safety net that costs nothing, and the benefit of the add-on comes from the context it supplies. This is no verdict on the value of verification for stronger models on harder work: \sheetfault{} tasks are single formulas over one or two tables, while workflow-level benchmarks find frontier agents failing far more often~\cite{zhu2026spreadsheetbench2}. The two Gemini runs were capped by the free tier's daily quota, so each covers the first tasks of a fixed hash order (\efDN{} and \efEN{} of the 360), a subset chosen without regard to difficulty; the Gemma run covers \efFN{}.
