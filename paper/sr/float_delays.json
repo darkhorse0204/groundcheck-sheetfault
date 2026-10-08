@@ -11,5 +11,6 @@
  "fig:e5-templates": 1,
  "tab:e5-seeds": 2,
  "fig:e5-taxonomy": 2,
- "tab:ssrf": 0
+ "tab:ssrf": 0,
+ "tab:e5-taxonomy": -1
 }
