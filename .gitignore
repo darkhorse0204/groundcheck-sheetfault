@@ -12,3 +12,10 @@ eval/annotation/out/
 eval/annotation/selftest_out/
 eval/gsheets/selftest_*
 eval/results/e5_pilot_*.log
+
+# local Apps Script deployment target (copy .clasp.json.example and put your own script id in it)
+.clasp.json
+# generated: `node eval/gsheets/make_pack.js`
+eval/gsheets/pack.json
+# build output: `cd paper && tectonic -X compile main.tex`
+paper/main.pdf

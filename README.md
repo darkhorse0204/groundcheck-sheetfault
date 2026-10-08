@@ -1,14 +1,26 @@
-# AI Copilot for Google Sheets
+# GroundCheck and SheetFault
 
-Built by Ansh Jerath: architecting cloud solutions, machine learning integrations, and robust data pipelines.
+**Code, benchmark and data for the paper "Verify before you write: workbook-grounded verification for LLM spreadsheet agents"** — Ansh Jerath and Jagadeesan S (School of Computer Science and Engineering and Information Systems, Vellore Institute of Technology).
 
-👉 **[Watch the 2-Minute Loom Demo Here](https://www.loom.com/share/b197d926990a454a9954602e23095320)** 👈
+A language model that writes a spreadsheet formula can fail in two ways: **loudly**, leaving `#REF!` or `#NAME?` in the cell, or **silently**, leaving a plausible but wrong number. This repository holds a verifier that runs *before* the formula is written, a benchmark that measures it, and every script and result file behind the paper.
 
-An AI assistant that lives inside a Google Sheet, in a sidebar, and helps you write formulas, debug broken ones, explain complex logic, pull in data from APIs, and push data back out — all without leaving the spreadsheet.
+- **GroundCheck** — a deterministic verifier that parses a candidate formula and checks it in six layers (structural, symbols, bounds, shape, grounding, circularity) against the open workbook. No second model call. It lives in [`Verification.js`](Verification.js) with the parser in [`FormulaParser.js`](FormulaParser.js); see [Verification pipeline](#verification-pipeline).
+- **SheetFault** — a seeded benchmark of 24,248 formulas (13,356 faulty, 10,892 clean) built from 72 generated workbooks and 20 fault operators. Every label comes from [HyperFormula](https://github.com/handsontable/hyperformula), an **independent** spreadsheet engine, never from the verifier under test. Generators are in [`eval/lib/`](eval/lib).
+- **The system under study** — the verifier is not a stand-alone prototype. It ships inside a working Google Sheets add-on (about 9,400 lines of Apps Script, 163 tests), and the experiments run that add-on's own source files unmodified. The rest of this README documents that add-on.
 
-It's built as a **Google Apps Script add-on** (not a website, not a browser extension). Google Apps Script is Google's built-in scripting platform for Sheets/Docs/Forms — your code runs on Google's servers and talks directly to the spreadsheet.
+### Where things are
 
-The verification layer, the retrieval component and the URL validator are evaluated in a research paper (`paper/`, with the benchmark and experiment harness in `eval/` — see [Reproducing the evaluation](#reproducing-the-evaluation)).
+| You want to | Go to |
+|---|---|
+| Reproduce the numbers in the paper | [Reproducing the evaluation](#reproducing-the-evaluation) |
+| Read the raw experiment output | [`eval/results/`](eval/results) |
+| See the verifier itself | [`Verification.js`](Verification.js), and [Verification pipeline](#verification-pipeline) |
+| See the benchmark generators | [`eval/lib/faults.js`](eval/lib/faults.js), [`eval/lib/workbookGen.js`](eval/lib/workbookGen.js), [`eval/lib/oracle.js`](eval/lib/oracle.js) |
+| Try the verifier on your own formula | `cd eval && node worked_example.js "=SUM(Z1:Z9)"` |
+| Install and use the add-on | [Running it yourself](#running-it-yourself) |
+| Read the paper source | [`paper/`](paper) |
+
+The Sheetpedia workbooks used for the real-formula experiments are **not** redistributed here — they are released separately under CC BY-SA 4.0, and [`eval/realworld/`](eval/realworld) holds the scripts that fetch and sample them. See [Data and licensing](#data-and-licensing).
 
 This file is the **only** documentation in this repo — everything that used to live in separate design/audit/planning documents has been folded in below, so there's one place to read.
 
@@ -38,6 +50,8 @@ This file is the **only** documentation in this repo — everything that used to
 - [Running it yourself](#running-it-yourself)
 - [Running the tests](#running-the-tests)
 - [Reproducing the evaluation](#reproducing-the-evaluation)
+- [Data and licensing](#data-and-licensing)
+- [Citation](#citation)
 - [Storage key reference](#storage-key-reference)
 - [A few things worth knowing](#a-few-things-worth-knowing)
 
@@ -849,12 +863,13 @@ No build step here — Google Apps Script just runs the `.js` and `.html` files 
 | `Api.js` | Talks to the Gemini AI model |
 | `Sidebar.html` | The actual interface you see and use inside Google Sheets |
 | `appsscript.json` | Apps Script project manifest (timezone, runtime version) |
-| `.clasp.json` | Tells `clasp` which Apps Script project to push to |
+| `.clasp.json.example` | Template telling `clasp` which Apps Script project to push to. Copy it to `.clasp.json` and put your own script ID in it — the real file is git-ignored, because a script ID points at one specific person's Apps Script project |
 | `.claspignore` | Keeps `test/`, `eval/` and `paper/` out of the push — they are Node-only (they `require()` modules) and would break the add-on if uploaded. Check with `clasp status`: only the 18 add-on files should be listed |
 | `package.json` | Just wires up `npm test` — there's no build step and nothing here gets installed as a dependency |
-| `test/` | The automated test suite (runs on your computer with Node, not inside Google Sheets) |
+| `LICENSE` | MIT, covering the code in this repository (not the Sheetpedia data — see [Data and licensing](#data-and-licensing)) |
+| `test/` | The automated test suite — 163 tests across 21 files, run on your computer with Node, not inside Google Sheets |
 | `eval/` | The evaluation harness behind the paper: benchmark generators, an independent execution oracle, the experiments, and their raw results (see [Reproducing the evaluation](#reproducing-the-evaluation)) |
-| `paper/` | The LaTeX source of the paper; tables and numbers are generated from `eval/results` |
+| `paper/` | The LaTeX source of the paper; tables, numbers and figures are generated from `eval/results`. `paper/sr/` holds the scripts that build the manuscript as a Word file in the journal's layout |
 
 ---
 
@@ -880,17 +895,14 @@ This opens a browser window asking you to sign in with the Google account that o
 
 ### Step 2 — Connect this project to a Google Sheet
 
-You have two options:
-
-**Option A — use a fresh Sheet (recommended if you're just trying this out):**
-
 1. Create a new Google Sheet in your browser.
 2. In the Sheet, go to **Extensions → Apps Script**. This opens the (currently empty) script project attached to that Sheet.
 3. Copy the Script ID from the Apps Script editor's **Project Settings** page.
-4. In this repo, open `.clasp.json` and replace the `scriptId` value with that ID.
-
-**Option B — push straight to the project this repo is already bound to:**
-Just use the `scriptId` already in `.clasp.json` — but only do this if that script project is actually yours (it usually won't be, if you cloned this repo from someone else).
+4. In this repo, copy the template and fill in that ID:
+   ```bash
+   cp .clasp.json.example .clasp.json
+   ```
+   Then open `.clasp.json` and replace `PUT_YOUR_APPS_SCRIPT_ID_HERE` with your Script ID. `.clasp.json` is git-ignored, so your project ID stays yours.
 
 ### Step 3 — Push the code
 
@@ -989,6 +1001,42 @@ cd ../paper && tectonic -X compile main.tex
 ```
 
 Every generator is seeded, so a run reproduces exactly (model outputs depend on the Ollama build and hardware). `v1` in the comparisons is the verifier at commit `44a3f4f`, kept verbatim in `eval/baselines/Verification.v1.js`. The real-world experiment needs the Sheetpedia workbooks, which are CC BY-SA 4.0 and are not redistributed here; `eval/realworld/extract.py` documents how the sample was drawn, and the files that embed their formula text (`results/e1b_*.rows.json`) are git-ignored. Backends: `ollama:<model>` (local), `gemini:<model>` (set `GEMINI_API_KEY`). The harness replaces only `UrlFetchApp.fetch`, so the production `Agents.js`/`Api.js` code runs as shipped.
+
+### What is committed, and what you generate
+
+Everything in `eval/results/` is **committed raw output** — the result files behind every table and figure in the paper, including `e5_pilot_gemini-3.1-flash-lite-previewid.jsonl`, an early hosted pilot that the paper **excludes** (it did not log the model version the API actually served; it is kept so the exclusion can be checked rather than taken on trust). The `.status` files record how each batch run ended, including the hosted runs stopped by a free-tier daily quota.
+
+Three things are deliberately **not** committed, because one command regenerates each:
+
+| Not committed | Regenerate with |
+|---|---|
+| `paper/main.pdf` | `cd paper && tectonic -X compile main.tex` |
+| `eval/gsheets/pack.json` | `node eval/gsheets/make_pack.js` — **generate it the same day you run the Sheets validation** (see note below) |
+| `eval/results/e1b_*.rows.json` | the `e1b_realworld.js` runs above — these embed formula text from CC BY-SA workbooks, so they stay out of this repository |
+
+The validation pack is deterministic apart from the date: regenerating it reproduces the same 318 cases over the same 134 workbooks, in the same order, with byte-identical workbooks. Two `clean:extra` cases are `=TEXT(TODAY(),"yyyy-mm-dd")`, whose expected value is the day the pack was built. That is why the pack is generated rather than committed — a stale pack would report two spurious mismatches against a Google Sheets run on any later day. Generate it and run it in Sheets on the same day. (This affects only the optional Google Sheets cross-check, which is not part of the paper's results; every label in the paper is a HyperFormula label.)
+
+---
+
+## Data and licensing
+
+- **Code in this repository** — MIT, see [`LICENSE`](LICENSE). That covers the add-on, the verifier, the benchmark generators, the experiment harness and the analysis scripts.
+- **Generated benchmark data** (`eval/results/`) — produced by the seeded generators in this repository, and covered by the same MIT licence.
+- **Sheetpedia workbooks** — used for the real-formula experiments and **not redistributed here**. They are published separately at [huggingface.co/datasets/tianzl66/Sheetpedia_xlsx](https://huggingface.co/datasets/tianzl66/Sheetpedia_xlsx) under CC BY-SA 4.0. `eval/realworld/fetch_fresh.py` and `extract.py` document exactly how each sample was drawn, so the sets can be rebuilt from the original release.
+- **HyperFormula** — the independent engine used to label faults and score answers, GPL-3.0, installed as an `eval/` dependency only. It is never loaded by the add-on, and the add-on itself has no dependencies.
+
+## Citation
+
+If you use GroundCheck, SheetFault or this harness, please cite the paper:
+
+```bibtex
+@article{jerath_groundcheck,
+  title  = {Verify before you write: workbook-grounded verification for LLM spreadsheet agents},
+  author = {Jerath, Ansh and Jagadeesan, S.},
+  year   = {2026},
+  note   = {Manuscript under review. Code and data: https://github.com/darkhorse0204/groundcheck-sheetfault}
+}
+```
 
 ---
 
