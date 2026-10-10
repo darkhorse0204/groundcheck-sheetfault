@@ -1,6 +1,6 @@
 # GroundCheck and SheetFault
 
-**Code, benchmark and data for the paper "Verify before you write: workbook-grounded verification for LLM spreadsheet agents"** — Ansh Jerath and Jagadeesan S (School of Computer Science and Engineering and Information Systems, Vellore Institute of Technology).
+**Code, benchmark and data for the paper "Ground Check: A Multi-Layer Workbook-Grounded Verification Framework for Reliable LLM-Based Spreadsheet Agents"** — Ansh Jerath and Jagadeesan S (School of Computer Science and Engineering and Information Systems, Vellore Institute of Technology).
 
 A language model that writes a spreadsheet formula can fail in two ways: **loudly**, leaving `#REF!` or `#NAME?` in the cell, or **silently**, leaving a plausible but wrong number. This repository holds a verifier that runs *before* the formula is written, a benchmark that measures it, and every script and result file behind the paper.
 
@@ -1031,7 +1031,7 @@ If you use GroundCheck, SheetFault or this harness, please cite the paper:
 
 ```bibtex
 @article{jerath_groundcheck,
-  title  = {Verify before you write: workbook-grounded verification for LLM spreadsheet agents},
+  title  = {Ground Check: A Multi-Layer Workbook-Grounded Verification Framework for Reliable LLM-Based Spreadsheet Agents},
   author = {Jerath, Ansh and Jagadeesan, S.},
   year   = {2026},
   note   = {Manuscript under review. Code and data: https://github.com/darkhorse0204/groundcheck-sheetfault}
