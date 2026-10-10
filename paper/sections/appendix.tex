@@ -1,0 +1,143 @@
+% In the appendix, single-column tables may be set where they occur instead of being queued to column tops.
+\makeatletter\renewcommand{\fps@table}{!htb}\makeatother
+
+\section{Benchmark details}
+\label{app:bench}
+
+\paragraph{Fault operators}
+Table~\ref{tab:ops} lists the operators. Each is applied to a gold formula; the result is kept as a fault only if the independent engine returns an error or a different value. Circular classes are generated at the position where users make them: the totals row under a numeric column, so the target cell lies inside the used column span. The \code{QUERY} class is generated from scratch and labelled by construction.
+
+\begin{table}[t]
+\caption{Fault operators and semantics-preserving variants used by \sheetfault.}
+\label{tab:ops}
+\centering\footnotesize
+\begin{tabular}{>{\raggedright\arraybackslash}p{1.35cm} >{\raggedright\arraybackslash}p{2.75cm} >{\raggedright\arraybackslash}p{4.0cm}}
+\toprule
+\textbf{Group} & \textbf{Class} & \textbf{Operator} \\
+\midrule
+Structural & unbalanced parenthesis / quote & delete the final \code{)} / one \code{"} \\
+ & missing \code{=} & drop the leading \code{=} \\
+ & injection & append \code{+DDE("cmd|...")} or use a \code{HYPERLINK} to a \code{javascript:} URL \\
+Symbols & hallucinated function & rename to a plausible invented name (\code{SUMIFF}, \code{COUNTWHERE}, \code{MEAN}, \code{NTHLARGEST}, \dots) \\
+ & non-existent sheet & singular/plural variant, \code{Sheet2}, \code{Data}, \code{<name>\_old}, or prefix an own-sheet range with a missing sheet \\
+ & column beyond data & move a range to a column 1--6 past the last used column \\
+ & header used as name & replace a range by its column's header text (\code{=SUM(Revenue)}) \\
+ & \code{QUERY} column OOB & select a column letter beyond the range's width \\
+Shape & lookup index too large & \code{VLOOKUP} index = number of lookup columns + 3 \\
+ & range size mismatch & shorten the last range of a multi-range function by 5--15 rows \\
+Grounding & criterion absent & alter a string criterion (\code{"East"} $\to$ \code{"Easts"}, \code{"Northeast"}) \\
+ & aggregate over text & replace the aggregated numeric range by a categorical column \\
+Circularity & self reference & add the target cell to the formula \\
+ & range / column contains self & totals-row range \code{F2:F81} or whole column \code{F:F} in \code{F81} \\
+ & cycle via cell / range & the formula reads a helper cell whose formula reads the target cell / a range containing it \\
+Semantic & wrong numeric column & swap one numeric range for another numeric column \\
+ & wrong function & \code{SUM}$\leftrightarrow$\code{AVERAGE}, \code{MAX}$\leftrightarrow$\code{MIN}, \code{SUMIF}$\leftrightarrow$\code{AVERAGEIF}, \dots \\
+\midrule
+Benign variants & (negatives) & rows of headroom; absolute references; whole-column references; lowercase function names; extra spacing; own-sheet prefix; \code{IFERROR} wrapper; named range \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Task templates}
+Fourteen templates: aggregate (\code{SUM/AVERAGE/MAX/MIN}), record count, conditional sum, conditional count, conditional average, two-condition \code{SUMIFS}/\code{COUNTIFS}, cross-sheet \code{VLOOKUP}, share of total, count above a threshold, \code{MAXIFS}, \code{SUMPRODUCT}, rounded average, $k$-th largest, and \code{INDEX/MATCH} for the row with the largest value. Each has an exact-header surface form (\emph{Sum Revenue where Region is East.}) and a paraphrase form (\emph{What is the total sales for the East territory?}) whose column mentions share no token with the headers.
+
+\input{generated/tab_e1_clean}
+
+\section{Verifier details}
+\label{app:verifier}
+
+The function list holds 520 names: the 513 functions of the official Sheets list~\cite{googlefunctions} plus seven that exist but are missing from that table. The shipped list held 150 names and omitted 365 of the 513 official functions, including \code{PRODUCT}, \code{AVERAGEIF}, \code{AVERAGEIFS}, \code{MAXIFS}, \code{GEOMEAN} and \code{COUNTUNIQUE}. A function is a hard error only if it is within edit distance 2 of a known name (1 for names shorter than six characters). Arity entries cover about 90 functions; we compared them with the documented syntax and corrected two. The grounding layer reads at most 500 rows per referenced column and judges a column as categorical only if it was read completely or has at most 25 distinct values. Layer switches live in \code{CONFIG.VERIFICATION.LAYERS} and the repair policy in \code{CONFIG.VERIFICATION.REPAIR\_ON\_SUSPICIOUS}.
+
+\section{Prompts}
+\label{app:prompts}
+The formula agent's system prompt is: \emph{``You are an expert Google Sheets formula engineer. [memory hints] RULES: 1. Output ONLY the raw formula starting with =. No markdown, no backticks, no explanation. 2. Use the spreadsheet context below to scope ranges correctly. 3. If data goes to row N, use that exact row number (not open-ended ranges unless appropriate). 4. Use the column letters and header names from the context. 5. If the user references a previous formula, check the conversation history.''} followed by three worked examples and the context block. After a failed verification the appended user turn has the form:
+\begin{quote}\small\ttfamily
+Your formula failed verification on attempt 2:\\
+Formula: =SUM(Revenue)\\
+HARD ERRORS (must fix):\\
+\hspace*{1em}$\times$ "Revenue" is not a function, named range or cell reference.\\
+CORRECTION HINTS:\\
+\hspace*{1em}$\rightarrow$ "Revenue" is a column header (column D). Reference it by cell range, e.g. D2:D80, not by name.
+\end{quote}
+
+\section{Additional results}
+\label{app:results}
+
+\paragraph{Detection by fault class}
+Table~\ref{tab:e1-classes} gives reject/flag recall for every fault class. \gc{} rejects every structural fault, every circular class, and the non-existent-sheet, header-as-name and lookup-index classes; where it only flags (criterion absent from its column, aggregation over a text column) this is the policy of Section~\ref{sec:gc}. The two semantic classes are valid formulas that answer the wrong question; the few hits in the last row coincide with the share of mutants that are loud.
+
+\input{generated/tab_e1_classes}
+
+\paragraph{Real-world rejections}
+Table~\ref{tab:e1b} divides the \rwRejTotal{} rejections of the held-out sample by reason, and Table~\ref{tab:e1b-fresh} the \rwcFRejected{} of the confirmation set. The independent engine returns an error for \rwRejEngineErr{} and \rwcFEngineConfirmed{} of them; \rwcTEmpty{} and \rwcFEmpty{} of these are formulas the dataset's PII pass blanked to \code{=}, so without them the engine confirms \rwcTEngineConfirmedReal{} of \rwcTRealRejected{} and \rwcFEngineConfirmedReal{} of \rwcFRealRejected{}. Of the ghost-sheet rejections for which the engine returns a value (\rwGhostOk{} and \rwcFGhostOk{}), \rwGhostOkMasked{} and \rwcFGhostOkMasked{} sit under an \code{IFERROR} wrapper that turns the missing sheet into a plausible fallback, which is the failure the verifier is meant to surface. In the held-out set the ranges beyond the used columns are mostly \code{COUNTA} on empty cells, which we exempted after seeing them; the frozen verifier of the confirmation set contains that exemption, and the \rwcFCatcol{} rejections of that kind that remain all produce an engine error. The unknown function names are near misses such as \code{SORTBY} and \code{ACONCAT}, which are not Sheets functions, and add-in stubs such as \code{\_FV}, which are rejected as a near miss of \code{FV}: a false positive of the rule that a near miss is a typo. The argument mismatches are \code{SUMIF} with unequal ranges, where spreadsheet products differ.
+
+\input{generated/tab_e1b}
+
+\input{generated/tab_e1b_fresh}
+
+\paragraph{Cost}
+Table~\ref{tab:e3} reports the cost of workbook analysis and of verifying one formula. Analysis makes a fixed number of \code{SpreadsheetApp} calls per sheet and its CPU time grows with the number of formulas but stays far below the latency of a model call. Verification grows linearly with the number of sheets for both verifiers; \gc{} adds a constant 19 calls over the shipped verifier for column profiles.
+
+\input{generated/tab_e3}
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig_e3_cost}
+\caption{Cost of workbook analysis and of verifying one formula. Left: CPU time against rows per sheet (three sheets; diamonds: as many formulas as rows). Right: \code{SpreadsheetApp} calls against the number of sheets (500 rows per sheet). The data are those of Table~\ref{tab:e3}.}
+\label{fig:e3-cost}
+\end{figure}
+
+\paragraph{SSRF corpus}
+Table~\ref{tab:ssrf} lists the \ssrfBlock{} must-block and \ssrfAllow{} must-allow URLs by category. The shipped substring filter misses every decimal, hexadecimal, octal and otherwise encoded form of loopback and private addresses and every internal-only name, catches few IPv6-mapped and link-local addresses, and over-blocks benign URLs that contain a private-looking substring; the parse-and-classify validator is correct on all categories.
+
+\input{generated/tab_ssrf}
+
+\paragraph{Retrieval by budget}
+Figure~\ref{fig:e2} shows gold-table completeness as the budget grows and Table~\ref{tab:e2} breaks down the 40-table setting by method. The seven-signal ranker is ahead of BM25 at every budget below that of the whole workbook; removing the lexical signal costs more than removing the graph signals.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig_e2_budget}
+\caption{Share of requests whose prompt contains every gold table, by context budget, for workbooks with 20 and 40 tables. Dotted line: size of the whole workbook.}
+\label{fig:e2}
+\end{figure}
+
+\input{generated/tab_e2}
+
+\paragraph{End-to-end study}
+Table~\ref{tab:e5-taxonomy} gives the counts behind Figure~\ref{fig:e5-taxonomy}, and Table~\ref{tab:e5-repair-shipped} repeats the repair comparison with the chunk format the add-on shipped. Figure~\ref{fig:e5-templates} shows attempt-1 accuracy for every task template and model; the templates the local models fail are those that need a cross-sheet reference, a ranking or a conditional average. Table~\ref{tab:e5-cost} gives the generation cost.
+
+\input{generated/tab_e5_taxonomy}
+
+\input{generated/tab_e5_repair_shipped}
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig_e5_templates}
+\caption{Attempt-1 accuracy with retrieved context by task template (rows) and model (columns); each cell is 11 to 58 tasks on the main set, 7 to 29 on the held-out set and at most 39 for each hosted model.}
+\label{fig:e5-templates}
+\end{figure}
+
+\input{generated/tab_e5_cost}
+
+\section{Checking the labels in Google Sheets}
+\label{app:gsheets}
+
+The labels of \sheetfault{} come from HyperFormula, which follows Excel, while the system targets Google Sheets. To check that the labels carry over, the repository holds a validation harness: a stratified sample of \gsPackCases{} benchmark cases over \gsPackWorkbooks{} workbooks (\gsPackPerFault{} per fault class, \gsPackPerClean{} per clean class), an Apps Script that builds each case's workbook in a Google Sheet, puts the formula in the target cell and records what the cell shows, and a script that compares the two engines' answers case by case and re-derives the faulty/clean label under Google Sheets. The harness stops and resumes within the Apps Script time limit. Its control flow, resumption and comparison were tested against a mock of the Apps Script services backed by HyperFormula, on which all cases agree, as they must; that test says nothing about Google Sheets.
+
+\ifdefined\gsN
+Run in Google Sheets, the two engines give the same answer (an error in both, or the same value) for \gsSame\% of the \gsN{} cases: HyperFormula errs where Sheets does not in \gsHfErrOnly{}, Sheets errs where HyperFormula does not in \gsGsErrOnly{}, and the values differ in \gsDiffValues{}. The faulty/clean label is identical under both engines for \gsLabelSame\% of the cases (\gsFlipFault{} faulty under HyperFormula only, \gsFlipClean{} faulty under Sheets only). On the sampled faults \gc{} rejects \gsvtwoRecallHF\% under HyperFormula labels and \gsvtwoRecallGS\% under Google Sheets labels (shipped verifier: \gsvoneRecallHF\% and \gsvoneRecallGS\%), and rejects \gsvtwoFPRGS\% of the clean cases under Sheets labels.
+\else
+The run in Google Sheets is not part of this version of the paper, so every label here is a HyperFormula label. The harness reports the same quantities as the benchmark tables, so a run adds one paragraph to this appendix.
+\fi
+
+\section{Independent annotation of real formulas}
+\label{app:annotation}
+
+The real-formula sets have no labels (Section~\ref{sec:rwmethod}). The repository holds a protocol and tooling for blind annotation: a sample of 400 confirmation-set formulas stratified by the verifiers' decisions (\gc{} rejects, \gc{} only warns, only the shipped verifier rejects, both accept), shuffled and stripped of all verifier output, with the formula, its workbook's sheet names and sizes, the neighbourhood of the target cell and the sheets the formula names; written guidelines (defect Y/N/U, loud or silent, a category); a scorer that reports agreement between two annotators (raw and Cohen's $\kappa$), takes adjudicated labels for disagreements, and reports weighted precision, recall and false-positive rate of each verifier with workbook-clustered intervals. The tooling was tested on synthetic annotations only.
+
+\ifdefined\annN
+Two annotators labelled \annOf{} formulas independently; they agreed on \annAgree\% (Cohen's $\kappa$ \annKappa{}; \annKappaYN{} for defect against no defect) and settled \annDisagree{} disagreements together, leaving \annN{} formulas scored. Weighted back to the population, \annPrevalence\% of formulas are defective. On this ground truth the shipped verifier's rejections have precision \annVoneP\% [\annVonePLo, \annVonePHi] and recall \annVoneR\% [\annVoneRLo, \annVoneRHi]; \gc's have precision \annVtwoP\% [\annVtwoPLo, \annVtwoPHi] and recall \annVtwoR\% [\annVtwoRLo, \annVtwoRHi], with false-positive rates of \annVoneF\% and \annVtwoF\%.
+\else
+No annotation is part of this version: the numbers of Section~\ref{sec:e1b} are rejection rates, with an engine's evaluation as supporting evidence, and we claim no precision or recall on real formulas.
+\fi

@@ -1,0 +1,20 @@
+\begin{table*}[!t]
+\caption{End-to-end execution accuracy (\%) of the production formula agent after up to two repair attempts, by repair strategy, with retrieved context. $\Delta$: percentage points over attempt 1; $p_{\text{Holm}}$: exact McNemar test against plain resampling (same tasks, paired), Holm-adjusted over the four feedback strategies of each model. Models whose first attempts are almost never rejected are omitted: no strategy has anything to repair.}
+\label{tab:e5-repair}
+
+\centering\footnotesize
+\begin{tabular}{l rrr rrr rrr}
+\toprule
+& \multicolumn{3}{c}{\textbf{Llama~3.1 8B} (n=360)} & \multicolumn{3}{c}{\textbf{Llama~3.2 3B} (n=360)} & \multicolumn{3}{c}{\textbf{Llama~3.1 8B, new tasks} (n=180)} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}\cmidrule(lr){8-10}
+\textbf{Condition} & Acc. & $\Delta$ & $p_{\text{Holm}}$ & Acc. & $\Delta$ & $p_{\text{Holm}}$ & Acc. & $\Delta$ & $p_{\text{Holm}}$ \\
+\midrule
+Attempt 1 (no repair) & 70.8 & -- & -- & 38.9 & -- & -- & 72.2 & -- & -- \\
+Resample (no feedback) & 71.1 & +0.3 & -- & 39.2 & +0.3 & -- & 72.8 & +0.6 & -- \\
+Generic feedback & 72.2 & +1.4 & .125 & 39.7 & +0.8 & 1.000 & 72.8 & +0.6 & 1.000 \\
+Shipped-verifier feedback & 74.2 & +3.3 & .007 & 39.7 & +0.8 & 1.000 & 74.4 & +2.2 & .750 \\
+GroundCheck feedback & \textbf{74.4} & +3.6 & .001 & \textbf{40.0} & +1.1 & 1.000 & \textbf{75.0} & +2.8 & .375 \\
+GroundCheck + suspicious & \textbf{75.3} & +4.4 & <.001 & \textbf{40.0} & +1.1 & 1.000 & \textbf{76.1} & +3.9 & .125 \\
+\bottomrule
+\end{tabular}
+\end{table*}

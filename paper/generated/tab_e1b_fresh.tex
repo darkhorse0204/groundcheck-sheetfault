@@ -1,0 +1,23 @@
+\begin{table}
+\caption{What GroundCheck rejects among 5{,}537 real-world formulas of the confirmation set, scored once with the frozen verifier (10.4\% rejected). \textquotedblleft{}Engine\textquotedblright{} is HyperFormula evaluating the original formula in its workbook.}
+\label{tab:e1b-fresh}
+
+\centering\footnotesize
+\begin{adjustbox}{max width=\columnwidth}\begin{tabular}{l r r r}
+\toprule
+\textbf{Rejection reason (\gc)} & \textbf{n} & \textbf{Engine error} & \textbf{Engine ok} \\
+\midrule
+Sheet absent from workbook & 355 & 201 & 154 \\
+Circular reference & 84 & 84 & 0 \\
+Range beyond used columns & 18 & 18 & 0 \\
+Empty formula (\texttt{=}) & 107 & 107 & 0 \\
+Syntax error & 1 & 1 & 0 \\
+Unresolved bare name & 2 & 2 & 0 \\
+Unknown function name & 4 & 4 & 0 \\
+Argument / range mismatch & 3 & 3 & 0 \\
+Other & 2 & 2 & 0 \\
+\midrule
+\textbf{Total rejected} & 576 & 422 & 154 \\
+\bottomrule
+\end{tabular}\end{adjustbox}
+\end{table}

@@ -1,0 +1,76 @@
+\documentclass[conference,a4paper]{IEEEtran}
+% IEEE conference format (two columns, 10 pt Times, A4), laid out like the reference paper
+% "Deep Learning Model for Sign Language Detection with Integrated Morse Code Conversion".
+% The publisher's running header/footer (proceedings title, ISBN, DOI, copyright line) is added
+% by the conference at publication time and is intentionally not reproduced here.
+
+\usepackage{cite}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{adjustbox}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,shapes.geometric,fit,calc}
+\usepackage[T1]{fontenc}
+\usepackage{url}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125em X}}
+
+\renewcommand{\IEEEkeywordsname}{Keywords}
+\setlength{\tabcolsep}{3.5pt}
+% columns end where the text ends: with many floats, flush-bottom pages stretch the space between paragraphs
+\raggedbottom
+
+\input{generated/numbers}
+
+\newcommand{\gc}{\textsc{GroundCheck}}
+\newcommand{\sheetfault}{\textsc{SheetFault}}
+\newcommand{\code}[1]{\texttt{#1}}
+
+\begin{document}
+
+\title{Verify Before You Write: Workbook-Grounded\\Verification for LLM Spreadsheet Agents}
+
+\author{
+\IEEEauthorblockN{Jagadeesan S}
+\IEEEauthorblockA{\textit{School of Computer Science and}\\
+\textit{Engineering and Information Systems}\\
+\textit{Vellore Institute of Technology}\\
+Vellore, India\\
+s.jagadeesan@vit.ac.in}
+\and
+\IEEEauthorblockN{Ansh Jerath}
+\IEEEauthorblockA{\textit{School of Computer Science and}\\
+\textit{Engineering and Information Systems}\\
+\textit{Vellore Institute of Technology}\\
+Vellore, India\\
+ansh.jerath2023@vitstudent.ac.in}
+}
+
+\maketitle
+
+\input{sections/abstract}
+
+\begin{IEEEkeywords}
+\textit{spreadsheet formulas, large language models, LLM agents, verification, benchmark, retrieval, SSRF}
+\end{IEEEkeywords}
+
+\input{sections/intro}
+\input{sections/related}
+\input{sections/system}
+\input{sections/method}
+\input{sections/results}
+\input{sections/discussion}
+\input{sections/limitations}
+
+\bibliographystyle{IEEEtran}
+\bibliography{refs}
+
+\appendices
+\input{sections/appendix}
+
+\end{document}

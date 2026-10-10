@@ -1,0 +1,21 @@
+\begin{table}
+\caption{What GroundCheck rejects among 5{,}184 real-world formulas in the held-out Sheetpedia sample (8.6\% rejected). \textquotedblleft{}Engine\textquotedblright{} is HyperFormula evaluating the original formula in its workbook. No cached results exist in the release, so there are no ground-truth labels; rejections are adjudicated by category (Appendix~\ref{app:results}).}
+\label{tab:e1b}
+
+\centering\footnotesize
+\begin{adjustbox}{max width=\columnwidth}\begin{tabular}{l r r r}
+\toprule
+\textbf{Rejection reason (\gc)} & \textbf{n} & \textbf{Engine error} & \textbf{Engine ok} \\
+\midrule
+Sheet absent from workbook & 371 & 319 & 52 \\
+Range beyond used columns & 14 & 2 & 12 \\
+Empty formula (\texttt{=}) & 33 & 33 & 0 \\
+Syntax error & 3 & 3 & 0 \\
+Unresolved bare name & 1 & 1 & 0 \\
+Unknown function name & 21 & 13 & 8 \\
+Argument / range mismatch & 2 & 2 & 0 \\
+\midrule
+\textbf{Total rejected} & 445 & 373 & 72 \\
+\bottomrule
+\end{tabular}\end{adjustbox}
+\end{table}

@@ -1,0 +1,122 @@
+{
+ "analyze": [
+  {
+   "rows": 100,
+   "sheets": 3,
+   "formulas": 0,
+   "analyzeMs": 1.0499,
+   "analyzeCalls": 35,
+   "tables": 3,
+   "chunks": 5,
+   "v2Ms": 0.8436,
+   "v2Calls": 31,
+   "v1Ms": 0.4069,
+   "v1Calls": 12
+  },
+  {
+   "rows": 500,
+   "sheets": 3,
+   "formulas": 0,
+   "analyzeMs": 3.1729,
+   "analyzeCalls": 35,
+   "tables": 3,
+   "chunks": 5,
+   "v2Ms": 2.0223,
+   "v2Calls": 31,
+   "v1Ms": 1.4192,
+   "v1Calls": 12
+  },
+  {
+   "rows": 1000,
+   "sheets": 3,
+   "formulas": 0,
+   "analyzeMs": 5.4554,
+   "analyzeCalls": 35,
+   "tables": 3,
+   "chunks": 5,
+   "v2Ms": 3.4859,
+   "v2Calls": 31,
+   "v1Ms": 2.9543,
+   "v1Calls": 12
+  },
+  {
+   "rows": 2000,
+   "sheets": 3,
+   "formulas": 0,
+   "analyzeMs": 11.3786,
+   "analyzeCalls": 35,
+   "tables": 3,
+   "chunks": 5,
+   "v2Ms": 6.3317,
+   "v2Calls": 31,
+   "v1Ms": 5.461,
+   "v1Calls": 12
+  },
+  {
+   "rows": 500,
+   "sheets": 3,
+   "formulas": 500,
+   "analyzeMs": 5.5889,
+   "analyzeCalls": 35,
+   "tables": 3,
+   "chunks": 5,
+   "v2Ms": 5.574,
+   "v2Calls": 31,
+   "v1Ms": 2.9424,
+   "v1Calls": 12
+  },
+  {
+   "rows": 2000,
+   "sheets": 3,
+   "formulas": 2000,
+   "analyzeMs": 20.8804,
+   "analyzeCalls": 35,
+   "tables": 3,
+   "chunks": 5,
+   "v2Ms": 13.7171,
+   "v2Calls": 31,
+   "v1Ms": 11.4623,
+   "v1Calls": 12
+  },
+  {
+   "rows": 500,
+   "sheets": 10,
+   "formulas": 100,
+   "analyzeMs": 6.1599,
+   "analyzeCalls": 91,
+   "tables": 10,
+   "chunks": 12,
+   "v2Ms": 3.6733,
+   "v2Calls": 52,
+   "v1Ms": 3.2131,
+   "v1Calls": 33
+  },
+  {
+   "rows": 500,
+   "sheets": 20,
+   "formulas": 100,
+   "analyzeMs": 10.881,
+   "analyzeCalls": 171,
+   "tables": 20,
+   "chunks": 22,
+   "v2Ms": 5.4838,
+   "v2Calls": 82,
+   "v1Ms": 5.2046,
+   "v1Calls": 63
+  },
+  {
+   "rows": 500,
+   "sheets": 40,
+   "formulas": 100,
+   "analyzeMs": 15.4277,
+   "analyzeCalls": 331,
+   "tables": 40,
+   "chunks": 42,
+   "v2Ms": 9.1284,
+   "v2Calls": 142,
+   "v1Ms": 8.7132,
+   "v1Calls": 123
+  }
+ ],
+ "verify": []
+}

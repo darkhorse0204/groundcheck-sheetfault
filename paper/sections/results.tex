@@ -1,0 +1,98 @@
+\section{Results}
+\label{sec:results}
+
+\subsection{Fault detection on \sheetfault}
+\label{sec:e1}
+\input{generated/tab_e1_overall}
+
+A lexical check blocks only \eonesyntaxrejectR\% of faults and a function linter \eonelintrejectR\% (Table~\ref{tab:e1-overall}): most benchmark faults are well formed and name things that do not exist or do not fit the data. The shipped verifier blocks \eonevonerejectR\% (F1 \eonevonerejectF) with no false positives, but \eonevoneflagR\% only if warnings count, and then \eonevoneflagFPR\% of clean formulas are flagged: its row-bounds warning fires on every formula with headroom (\cleanHeadroomVone\% of those) and its function list omits common functions such as \code{AVERAGEIF} and \code{MAXIFS}, so \cleanGoldVone\% of the \emph{gold} formulas are flagged. \gc{} blocks \eonevtworejectR\% (F1 \eonevtworejectF) at \eonevtworejectFPR\% false positives; counting warnings, recall is \eonevtwoflagR\% at FPR \eonevtwoflagFPR\%, and every flagged clean formula is a custom function missing from the official list (a warning by design; Table~\ref{tab:e1-clean}, Appendix~\ref{app:bench}, gives the false-alarm rate for every clean class).
+
+The headline difference is large and does not depend on how uncertainty is counted. Resampling the \clWbN{} workbooks rather than the formulas gives a 95\% interval of [\clVtwoRecallLo, \clVtwoRecallHi]\% for the recall of \gc{} and [\clVoneRecallLo, \clVoneRecallHi]\% for the shipped verifier, a paired difference of \clDiffRecall{} points [\clDiffRecallLo, \clDiffRecallHi], and \gc{} is ahead in \clWbBetter{} of \clWbN{} workbooks. These intervals are narrow because one generator produces every workbook, so they measure sampling noise, not how representative the benchmark is. The benchmark was written with the verifier; Section~\ref{sec:e1b} tests it on real formulas.
+
+Figure~\ref{fig:e1-classes} and Table~\ref{tab:e1-classes} (Appendix~\ref{app:results}) show where the gain comes from. The shipped verifier cannot see a range that contains its own cell (\clsrangecontainsselfvoneReject\% blocked), a whole-column self-inclusion (\clscolumncontainsselfvoneReject\%), a cycle through a range (\clscycleindirectrangevoneReject\%), a header used as a name (\clsheaderasnamevoneReject\%), unequal range sizes (\clsrangesizemismatchvoneReject\%) or an out-of-range lookup index (\clslookupindexoobvoneReject\%): its graph links a range to one node, never to the formula cells inside it, so the totals-row mistake is invisible. \gc{} blocks all of them. Hallucinated function names are blocked only as near-misses (\clsghostfunctionvtwoReject\%) and otherwise warned about (\clsghostfunctionvtwoFlag\% flagged), as intended for a language with custom functions; an absent criterion and an aggregate over text are flagged (\clsghostvaluevtwoFlag\% and \clstypemismatchvtwoFlag\%) but never rejected; the two semantic classes (\clswrongnumericcolN{} and \clswrongfunctionN{} instances) are essentially undetectable, as they must be.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.95\columnwidth]{figures/fig_e1_classes}
+\caption{Recall per fault class when a formula is blocked only on errors.}
+\label{fig:e1-classes}
+\end{figure}
+
+\input{generated/tab_e1_ablation}
+
+Removing one layer at a time (Table~\ref{tab:e1-ablation}), circularity matters most (reject recall \eonevtworejectR\% $\to$ \ablcircularRejectR\%), then the parse (\ablstructuralRejectR\%) and symbols (\ablsymbolsRejectR\%). Grounding leaves reject recall unchanged because its findings are warnings. Of the \visloudN{} loud faults \gc{} blocks \visloudvtwoReject\% (shipped: \visloudvoneReject\%); of the \vissilentN{} silent faults, which would write a plausible wrong value into the sheet, it blocks \vissilentvtwoReject\% and flags \vissilentvtwoFlag\% (shipped: \vissilentvoneReject\% and \vissilentvoneFlag\%; Figure~\ref{fig:e1-visibility}). The rest are the semantic swaps: verification turns most silent failures into visible ones but does not make an agent correct.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig_e1_visibility}
+\caption{Recall on loud and silent faults. Solid: the formula is blocked; hatched: only a warning is raised.}
+\label{fig:e1-visibility}
+\end{figure}
+
+The result does not depend on the workbook domain (Figure~\ref{fig:e1-domain}): reject recall is \domVtwoMin--\domVtwoMax\% for \gc{} and \domVoneMin--\domVoneMax\% for the shipped verifier in each of the six domains, with \domVtwoFPRMax\% false positives in every one; across the \domWbN{} individual workbooks it ranges from \domWbMin\% to \domWbMax\% (shipped: \domWbVoneMin--\domWbVoneMax\%), so no single workbook accounts for the gain.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig_e1_domain}
+\caption{Reject recall by workbook domain, with 95\% Wilson intervals; each dot is one of the 12 workbooks of the domain.}
+\label{fig:e1-domain}
+\end{figure}
+
+\subsection{Real-world formulas}
+\label{sec:e1b}
+\paragraph{Development and held-out sets}
+On the development set the first runs exposed two defects in our verifier, a tokenizer gap for row ranges with absolute markers (\code{\$1:\$1}) and a circularity false positive on \code{ROWS(B\$2:B83)} placed in B83, and one in our corpus extraction (Excel defined names were not loaded). After fixing them the development rejection rate is \rwDevvtwoReject\% (shipped verifier: \rwDevvoneReject\%). The held-out set, scored once, gives \rwcTVoneReject\% for the shipped verifier and \rwcTVtwoReject\% for \gc{} on \rwcTFormulas{} formulas from \rwcTWorkbooks{} workbooks (flag policy: \rwvoneFlag\% and \rwvtwoFlag\%). After seeing it we exempted \code{COUNTA}, \code{COUNTBLANK} and \code{ISBLANK} when they point at empty cells, which lowers the rate to \rwvtwoRejectPost\%; the first-pass figure is the held-out result, because the second was tuned on this set.
+
+By rejection rate the two verifiers are not distinguishable: the difference is \rwcTDiff{} points (workbook-clustered 95\% interval [\rwcTDiffLo, \rwcTDiffHi]; Table~\ref{tab:rw-sets}). Rejections are concentrated. Only \rwcTWbRejected{} of the 300 workbooks contain a rejection of a real formula, and the five workbooks with the most rejections hold \rwcTTopfiveShare\% of them, which is why these intervals are far wider than formula-level ones.
+
+\input{generated/tab_rw_sets}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig_rw_overlap}
+\caption{Where the two verifiers disagree on real formulas: the formulas rejected by at least one of them, by who rejects them. Formulas blanked by the dataset's PII pass count as artifacts. Confirmation set~2 was scored with the extended verifier.}
+\label{fig:rw-overlap}
+\end{figure}
+
+\paragraph{Confirmation set, verifier frozen}
+The confirmation set (\rwcFFormulas{} formulas from \rwcFWorkbooks{} workbooks), scored once with the frozen verifier, gives \rwcFVoneReject\% for the shipped verifier and \rwcFVtwoReject\% for \gc{}, a difference of \rwcFDiff{} points [\rwcFDiffLo, \rwcFDiffHi]. Of the \rwcFRejected{} rejections by \gc, \rwcFEmpty{} are formulas that the dataset's PII pass blanked to \code{=}; they are not real formulas, and without them the rate is \rwcFVtwoRejectNoEmpty\% [\rwcFVtwoRejectNoEmptyLo, \rwcFVtwoRejectNoEmptyHi]. For \rwcFEngineConfirmedReal{} of the other \rwcFRealRejected{} the independent engine also returns an error (Appendix~\ref{app:results}). Most of the rest reference sheets that do not exist, \rwcFGhostOkMasked{} of them inside \code{IFERROR} or a similar wrapper: the formula is broken and the wrapper hides it, a latent fault that no check on values can see.
+
+The sets show where the two verifiers differ (Figure~\ref{fig:rw-overlap}). Both reject \rwcFOBoth{} formulas. Only \gc{} rejects \rwcFOOnlyVtwoReal{} real formulas (the engine returns an error for \rwcFOOnlyVtwoEngineError{} of them), chiefly circular references and ranges beyond the data. Only the shipped verifier rejects \rwcFOOnlyVone{}. \rwcFOOnlyVoneRefLiteral{} of them contain a literal \code{\#REF!}, a reference deleted from the formula, which the shipped verifier catches by accident because it reads \code{REF!} as a sheet name; \rwcFOOnlyVoneIndirect{} are \code{INDIRECT} calls whose text names a sheet that does not exist, or builds the name by concatenation; these are \gc's misses. The remaining \rwcFOOnlyVoneOther{} is a parsing error of the shipped verifier on a sheet name that contains a quote. Neither class is in \sheetfault, and \gc{} checked neither: a benchmark written with the verifier cannot show a gap that the authors' idea of faults did not include. The held-out set held the same gap (\rwcTORefLiteralInAnyFormula{} formulas with \code{\#REF!}), which we had not examined from this angle. Deleted references are not rare: \rwcFORefLiteralInAnyFormula{} of \rwcFFormulas{} confirmation formulas contain one.
+
+\ifdefined\rwcGFormulas
+\paragraph{Closing the gap, and a second confirmation}
+We extended \gc{} by two rules: a literal \code{\#REF!} or \code{\#NAME?} in a formula is an error, and an \code{INDIRECT} whose text starts with a sheet name is checked against the workbook's sheets. The rules change none of the \eqInstances{} \sheetfault{} verdicts (\eqDiff{} differ) and can fire on none of the \eqFormulas{} formulas the models generated (\eqHits{} do), so the benchmark and end-to-end results hold for the extended verifier. Scored again on the real formulas, the extended verifier rejects \rwcTPVtwoReject\% of the held-out and \rwcFPVtwoReject\% of the confirmation formulas, but these figures are post hoc, since both sets informed the rules. The confirmatory test is a second confirmation set (\rwcGFormulas{} formulas from \rwcGWorkbooks{} workbooks, from a later part of the archive), scored once with the extended verifier frozen: the shipped verifier rejects \rwcGVoneReject\% and \gc{} \rwcGVtwoReject\% (difference \rwcGDiff{} points [\rwcGDiffLo, \rwcGDiffHi]; without blanked formulas \rwcGVtwoRejectNoEmpty\%). Of the \rwcGOOnlyVone{} formulas that only the shipped verifier rejects, \rwcGOOnlyVoneRefLiteral{} contain \code{\#REF!}; reading all of them, the rest are spurious rejections: it takes parentheses and \code{!} inside text literals for code, and treats an \code{INDIRECT} whose sheet name comes from a named range as a missing sheet (the engine evaluates \rwcGOOnlyVoneEngineOk{} of them without error). The \rwcGOOnlyVtwoReal{} real formulas that only \gc{} rejects all produce an engine error (\rwcGOOnlyVtwoEngineError{}).
+\fi
+
+Taken together, between about 6\% and 11\% of real formulas are rejected by either verifier, the rejections sit in a few workbooks, and \gc{} rejects one to two points more than the shipped verifier, a difference whose workbook-clustered interval includes zero in every set. The larger gain that \sheetfault{} shows does not appear in the rejection rate on real formulas. What differs is the kind of rejection. Where the verifiers disagree, the formulas that only \gc{} rejects are engine-confirmed errors (\rwcFOOnlyVtwoEngineError{} of \rwcFOOnlyVtwoReal{} in confirmation set~1\ifdefined\rwcGFormulas, \rwcGOOnlyVtwoEngineError{} of \rwcGOOnlyVtwoReal{} in set~2\fi)\ifdefined\rwcGFormulas, and, once deleted references are covered, the \rwcGOOnlyVone{} formulas that only the shipped verifier rejects in set~2 are all spurious\fi. This is supporting evidence, not a precision figure, since it rests on one engine and on our reading of the formulas. The benchmark measures coverage of the fault classes we designed; real formulas contain some of them rarely and others, such as deleted references, that we had not listed.
+
+\subsection{End-to-end accuracy with real models}
+\label{sec:e5}
+\input{sections/e5}
+
+\ifdefined\sixN
+\subsection{Why not ask the model?}
+\label{sec:e6}
+\input{generated/tab_e6}
+A critic given the same model and context (\sixN{} sampled instances, \sixFaults{} faulty; Table~\ref{tab:e6}) rejects \sixCriticR\% of faults and \sixCriticFPR\% of clean formulas (F1 \sixCriticF), against \sixVerR\% and \sixVerFPR\% for the verifier on the same sample (F1 \sixVerF). It catches only \sixCriticStructural\% of the structural faults, which a parser sees at no cost, and \sixCriticCircular\% of circular references (verifier: \sixVerCircular\%). It does catch \sixCriticOnlyCaught{} faults the verifier does not (chiefly \sixCriticOnlyWhere), against \sixVerOnlyCaught{} the other way round (the verifier flags the grounding cases but by policy does not reject them); combining the two raises recall to \sixEitherR\% but false positives to \sixEitherFPR\%. Asking the model is a poor replacement for a parser and at best a complement where the workbook cannot adjudicate.
+\fi
+
+\subsection{Context retrieval under a token budget}
+\label{sec:e2}
+When the whole workbook fits the budget, retrieval is moot: at \eTwoZeroFull{} tokens (10 tables) every ranking method, even random, retrieves all gold tables at a 1{,}500-token budget (\eTwoZeroComplete\% for the ranker). It becomes informative as workbooks grow. At \eTwoTables{} tables (\eTwoFull{} tokens, \eTwoReq{} requests, budget 1{,}500, \eTwoReduction\% fewer tokens than sending everything) the ranker keeps all gold tables in \eTwoRankerComplete\% of requests against \eTwoBmComplete\% for BM25 and \eTwoRandComplete\% for random, and the shipped agent's active-sheet context holds none (Table~\ref{tab:e2} and Figure~\ref{fig:e2}, Appendix~\ref{app:results}); at a 500-token budget the figures are \eTwoRankerCompleteSmall\% and \eTwoBmCompleteSmall\%. Adding column letters made every chunk longer, so the same budget holds fewer tables: the cost of the fix in Section~\ref{sec:e5}. Figure~\ref{fig:e2-scale} shows the same budget as the workbook grows: the ranker and BM25 are equal while everything fits, the gap opens as the workbook outgrows the budget, and the active-sheet context never holds the gold tables.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig_e2_scale}
+\caption{Share of requests whose prompt contains every gold table at a 1{,}500-token budget, as the workbook grows (10, 20 and 40 tables).}
+\label{fig:e2-scale}
+\end{figure}
+
+\input{generated/tab_e2_type}
+Lexical overlap solves requests that name the data and graph signals those that do not (Table~\ref{tab:e2-type}): for ``change this to an average'' the ranker finds the table in \eTwoRankerC\% of requests, BM25 in \eTwoBmC\%, and the ranker without its two graph signals in \eTwoNoGraphC\%. The graph signals are redundant with each other, so removing one changes nothing. The structural signals add nothing on this benchmark. Paraphrase is the weak spot: with no shared word, \eTwoRankerAS\% (aggregates) and \eTwoRankerBS\% (lookups) of requests are gold-complete.
+
+\subsection{Cost, and the fetch boundary (secondary)}
+\label{sec:e3}
+Analysis costs about 11 \code{SpreadsheetApp} calls plus \eScaleCallsPerSheet{} per sheet, independent of rows; verifying one formula costs \eScaleVerifyVone{} calls in the shipped verifier and \eScaleVerifyVtwo{} in \gc{} (a constant increase for column profiles, plus \eScaleVerifyPerSheet{} per sheet); CPU time stays below \eScaleMaxAnalyzeMs{} ms for analysis and \eScaleMaxVerifyMs{} ms for verification even at 2{,}000 formulas (Table~\ref{tab:e3} and Figure~\ref{fig:e3-cost}, Appendix~\ref{app:results}; Apps Script latency itself is not measured), negligible next to a model call.
+
+The URL validator is a secondary result, included because the same check-before-acting idea guards the add-on's one outbound channel. On the corpus of Table~\ref{tab:ssrf} (Appendix~\ref{app:results}), the shipped URL filter blocks \ssrfvoneRecall\% of \ssrfBlock{} must-block URLs (\ssrfvoneBypass{} bypasses, including every decimal, hexadecimal and octal encoding of loopback and private addresses, \code{127.1}, and every internal-only name) and wrongly blocks \ssrfvoneFalseBlock\% of \ssrfAllow{} benign URLs, because it matches substrings of the whole URL (\code{https://210.1.2.3/} is rejected for containing \code{10.1.2.3}). The parse-and-classify validator blocks \ssrfvtwoRecall\% (95\% interval lower bound \ssrfvtwoCILo\%) with \ssrfvtwoFalseBlock\% false blocks. The corpus was built by us from known bypass classes, so it measures coverage, not adversarial robustness; one bypass (a backslash before \code{@}) was found by the first run and fixed.

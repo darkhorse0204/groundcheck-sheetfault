@@ -1,0 +1,3760 @@
+[
+ {
+  "model": "llama3.1-8b",
+  "nPass2": 360,
+  "nPass1": 360,
+  "nValid": 360,
+  "context": {
+   "n": 360,
+   "arms": {
+    "flat": {
+     "overall": {
+      "p": 0.7222222222222222,
+      "lo": 0.6737921637197266,
+      "hi": 0.7659596403620497,
+      "n": 360
+     },
+     "lookup": {
+      "n": 30,
+      "acc": {
+       "p": 0.03333333333333333,
+       "lo": 0.0059084379948573795,
+       "hi": 0.16670751396958874,
+       "n": 30
+      }
+     },
+     "other": {
+      "n": 330,
+      "acc": {
+       "p": 0.7848484848484848,
+       "lo": 0.737368009293876,
+       "hi": 0.8257733128181673,
+       "n": 330
+      }
+     }
+    },
+    "final": {
+     "overall": {
+      "p": 0.7083333333333334,
+      "lo": 0.6593770210469021,
+      "hi": 0.7528902952797631,
+      "n": 360
+     },
+     "lookup": {
+      "n": 30,
+      "acc": {
+       "p": 0,
+       "lo": 0,
+       "hi": 0.113517091390478,
+       "n": 30
+      }
+     },
+     "other": {
+      "n": 330,
+      "acc": {
+       "p": 0.7727272727272727,
+       "lo": 0.7245250739974605,
+       "hi": 0.8146527875991769,
+       "n": 330
+      }
+     }
+    },
+    "shipped": {
+     "overall": {
+      "p": 0.6444444444444445,
+      "lo": 0.5937091466910047,
+      "hi": 0.6921295259621498,
+      "n": 360
+     },
+     "lookup": {
+      "n": 30,
+      "acc": {
+       "p": 0,
+       "lo": 0,
+       "hi": 0.113517091390478,
+       "n": 30
+      }
+     },
+     "other": {
+      "n": 330,
+      "acc": {
+       "p": 0.703030303030303,
+       "lo": 0.6516233406175443,
+       "hi": 0.7497646230155078,
+       "n": 330
+      }
+     }
+    }
+   },
+   "tests": {
+    "final-vs-flat": {
+     "aOnly": 12,
+     "bOnly": 17,
+     "p": 0.45825831964611907
+    },
+    "final-vs-shipped": {
+     "aOnly": 34,
+     "bOnly": 11,
+     "p": 0.0008240823595997448
+    },
+    "shipped-vs-flat": {
+     "aOnly": 9,
+     "bOnly": 37,
+     "p": 0.00004056036132737963
+    }
+   }
+  },
+  "taxonomy": {
+   "nWrong": 105,
+   "loud": 67,
+   "silent": 38,
+   "byErrorType": {
+    "NAME": 20,
+    "REF": 28,
+    "VALUE": 12,
+    "NA": 5,
+    "DIV_BY_ZERO": 1,
+    "NUM": 1
+   },
+   "v1": {
+    "reject": 29,
+    "flag": 68
+   },
+   "v2": {
+    "reject": 35,
+    "flag": 50,
+    "suspicious": 8
+   },
+   "loudCaught": {
+    "v1": 29,
+    "v2": 35
+   },
+   "silentCaught": {
+    "v1reject": 0,
+    "v2reject": 0,
+    "v2flag": 6,
+    "v1flag": 16
+   },
+   "v2Reasons": {
+    "Sheet \"…\" does not exist.": 29,
+    "Criterion \"…\" never occurs in REF (\"…\").": 5,
+    "MAXIFS is applied to REF, a column of text (\"…\") — the resul": 1,
+    "\"…\" is not a function, named range or cell reference.": 3,
+    "Unknown function \"…\".": 1,
+    "SUMIF expects N-N arguments but got N.": 1,
+    "SUMIF ranges have different sizes: Employees!REF is NxN but ": 1,
+    "SUMIF is applied to REF, a column of text (\"…\") — the result": 1
+   }
+  },
+  "falseAlarms": {
+   "nCorrect": 255,
+   "v1Reject": 0,
+   "v2Reject": 0,
+   "v2Suspicious": 0
+  },
+  "gate": {
+   "accepted": 325,
+   "rejected": 35,
+   "accuracyAccepted": {
+    "p": 0.7846153846153846,
+    "lo": 0.7367339491723677,
+    "hi": 0.8258469408366822,
+    "n": 325
+   },
+   "accuracyRejected": {
+    "p": 0,
+    "lo": 0,
+    "hi": 0.09890426758938868,
+    "n": 35
+   },
+   "accuracyAll": {
+    "p": 0.7083333333333334,
+    "lo": 0.6593770210469021,
+    "hi": 0.7528902952797631,
+    "n": 360
+   }
+  },
+  "repair": {
+   "n": 360,
+   "attempt1": {
+    "p": 0.7083333333333334,
+    "lo": 0.6593770210469021,
+    "hi": 0.7528902952797631,
+    "n": 360
+   },
+   "strategies": {
+    "resample": {
+     "accuracy": {
+      "p": 0.7111111111111111,
+      "lo": 0.6622558148267513,
+      "hi": 0.7555083990509363,
+      "n": 360
+     },
+     "fixed": 1,
+     "broken": 0,
+     "stillInvalidV2": 31,
+     "vsAttempt1": {
+      "gained": 1,
+      "lost": 0,
+      "p": 1,
+      "diffCI": {
+       "est": 0.002777777777777778,
+       "lo": 0,
+       "hi": 0.008333333333333333
+      }
+     },
+     "vsResample": null,
+     "vsGeneric": null,
+     "vsV1": null,
+     "meanAttempts": 1.1833333333333333,
+     "repairedShare": 0.09722222222222222,
+     "transitions": {
+      "n": 35,
+      "correct": 1,
+      "validWrong": 3,
+      "stillInvalid": 31
+     }
+    },
+    "generic": {
+     "accuracy": {
+      "p": 0.7222222222222222,
+      "lo": 0.6737921637197266,
+      "hi": 0.7659596403620497,
+      "n": 360
+     },
+     "fixed": 5,
+     "broken": 0,
+     "stillInvalidV2": 24,
+     "vsAttempt1": {
+      "gained": 5,
+      "lost": 0,
+      "p": 0.0625,
+      "diffCI": {
+       "est": 0.013888888888888888,
+       "lo": 0.002777777777777778,
+       "hi": 0.027777777777777776
+      }
+     },
+     "vsResample": {
+      "gained": 4,
+      "lost": 0,
+      "p": 0.125
+     },
+     "vsGeneric": null,
+     "vsV1": null,
+     "meanAttempts": 1.1694444444444445,
+     "repairedShare": 0.09722222222222222,
+     "transitions": {
+      "n": 35,
+      "correct": 5,
+      "validWrong": 6,
+      "stillInvalid": 24
+     }
+    },
+    "v1fb": {
+     "accuracy": {
+      "p": 0.7416666666666667,
+      "lo": 0.6940653074848401,
+      "hi": 0.7841647794540917,
+      "n": 360
+     },
+     "fixed": 12,
+     "broken": 0,
+     "stillInvalidV2": 9,
+     "vsAttempt1": {
+      "gained": 12,
+      "lost": 0,
+      "p": 0.0004882812500000003,
+      "diffCI": {
+       "est": 0.03333333333333333,
+       "lo": 0.016666666666666666,
+       "hi": 0.05277777777777778
+      }
+     },
+     "vsResample": {
+      "gained": 12,
+      "lost": 1,
+      "p": 0.003417968750000001
+     },
+     "vsGeneric": {
+      "gained": 9,
+      "lost": 2,
+      "p": 0.0654296875
+     },
+     "vsV1": null,
+     "meanAttempts": 1.1083333333333334,
+     "repairedShare": 0.08055555555555556,
+     "transitions": {
+      "n": 35,
+      "correct": 12,
+      "validWrong": 14,
+      "stillInvalid": 9
+     }
+    },
+    "v2fb": {
+     "accuracy": {
+      "p": 0.7444444444444445,
+      "lo": 0.6969705964626787,
+      "hi": 0.7867563880272752,
+      "n": 360
+     },
+     "fixed": 13,
+     "broken": 0,
+     "stillInvalidV2": 4,
+     "vsAttempt1": {
+      "gained": 13,
+      "lost": 0,
+      "p": 0.00024414062500000016,
+      "diffCI": {
+       "est": 0.03611111111111111,
+       "lo": 0.016666666666666666,
+       "hi": 0.058333333333333334
+      }
+     },
+     "vsResample": {
+      "gained": 12,
+      "lost": 0,
+      "p": 0.0004882812500000003
+     },
+     "vsGeneric": {
+      "gained": 8,
+      "lost": 0,
+      "p": 0.007812500000000002
+     },
+     "vsV1": {
+      "gained": 2,
+      "lost": 1,
+      "p": 1
+     },
+     "meanAttempts": 1.1333333333333333,
+     "repairedShare": 0.09722222222222222,
+     "transitions": {
+      "n": 35,
+      "correct": 13,
+      "validWrong": 18,
+      "stillInvalid": 4
+     }
+    },
+    "v2fb+susp": {
+     "accuracy": {
+      "p": 0.7527777777777778,
+      "lo": 0.7057006758206902,
+      "hi": 0.7945170013223303,
+      "n": 360
+     },
+     "fixed": 16,
+     "broken": 0,
+     "stillInvalidV2": 5,
+     "vsAttempt1": {
+      "gained": 16,
+      "lost": 0,
+      "p": 0.000030517578125000014,
+      "diffCI": {
+       "est": 0.044444444444444446,
+       "lo": 0.025,
+       "hi": 0.06666666666666667
+      }
+     },
+     "vsResample": {
+      "gained": 15,
+      "lost": 0,
+      "p": 0.00006103515625000003
+     },
+     "vsGeneric": {
+      "gained": 11,
+      "lost": 0,
+      "p": 0.0009765624999999999
+     },
+     "vsV1": {
+      "gained": 5,
+      "lost": 1,
+      "p": 0.21875000000000006
+     },
+     "meanAttempts": 1.163888888888889,
+     "repairedShare": 0.11666666666666667,
+     "transitions": {
+      "n": 35,
+      "correct": 13,
+      "validWrong": 17,
+      "stillInvalid": 5
+     }
+    }
+   }
+  },
+  "repairLookup": {
+   "n": 30,
+   "attempt1": {
+    "p": 0,
+    "lo": 0,
+    "hi": 0.113517091390478,
+    "n": 30
+   },
+   "strategies": {
+    "resample": {
+     "accuracy": {
+      "p": 0,
+      "lo": 0,
+      "hi": 0.113517091390478,
+      "n": 30
+     },
+     "fixed": 0,
+     "broken": 0,
+     "stillInvalidV2": 29,
+     "vsAttempt1": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1,
+      "diffCI": {
+       "est": 0,
+       "lo": 0,
+       "hi": 0
+      }
+     },
+     "vsResample": null,
+     "vsGeneric": null,
+     "vsV1": null,
+     "meanAttempts": 2.933333333333333,
+     "repairedShare": 0.9666666666666667,
+     "transitions": {
+      "n": 29,
+      "correct": 0,
+      "validWrong": 0,
+      "stillInvalid": 29
+     }
+    },
+    "generic": {
+     "accuracy": {
+      "p": 0.1,
+      "lo": 0.03459925995971615,
+      "hi": 0.25621441315266624,
+      "n": 30
+     },
+     "fixed": 3,
+     "broken": 0,
+     "stillInvalidV2": 22,
+     "vsAttempt1": {
+      "gained": 3,
+      "lost": 0,
+      "p": 0.25000000000000006,
+      "diffCI": {
+       "est": 0.1,
+       "lo": 0,
+       "hi": 0.23333333333333334
+      }
+     },
+     "vsResample": {
+      "gained": 3,
+      "lost": 0,
+      "p": 0.25000000000000006
+     },
+     "vsGeneric": null,
+     "vsV1": null,
+     "meanAttempts": 2.7333333333333334,
+     "repairedShare": 0.9666666666666667,
+     "transitions": {
+      "n": 29,
+      "correct": 3,
+      "validWrong": 4,
+      "stillInvalid": 22
+     }
+    },
+    "v1fb": {
+     "accuracy": {
+      "p": 0.4,
+      "lo": 0.24590394326083403,
+      "hi": 0.5767994750172616,
+      "n": 30
+     },
+     "fixed": 12,
+     "broken": 0,
+     "stillInvalidV2": 4,
+     "vsAttempt1": {
+      "gained": 12,
+      "lost": 0,
+      "p": 0.0004882812500000003,
+      "diffCI": {
+       "est": 0.4,
+       "lo": 0.23333333333333334,
+       "hi": 0.5666666666666667
+      }
+     },
+     "vsResample": {
+      "gained": 12,
+      "lost": 0,
+      "p": 0.0004882812500000003
+     },
+     "vsGeneric": {
+      "gained": 9,
+      "lost": 0,
+      "p": 0.00390625
+     },
+     "vsV1": null,
+     "meanAttempts": 2.2666666666666666,
+     "repairedShare": 0.9333333333333333,
+     "transitions": {
+      "n": 29,
+      "correct": 12,
+      "validWrong": 13,
+      "stillInvalid": 4
+     }
+    },
+    "v2fb": {
+     "accuracy": {
+      "p": 0.36666666666666664,
+      "lo": 0.21873702204017678,
+      "hi": 0.5448675356639506,
+      "n": 30
+     },
+     "fixed": 11,
+     "broken": 0,
+     "stillInvalidV2": 4,
+     "vsAttempt1": {
+      "gained": 11,
+      "lost": 0,
+      "p": 0.0009765624999999999,
+      "diffCI": {
+       "est": 0.36666666666666664,
+       "lo": 0.2,
+       "hi": 0.5333333333333333
+      }
+     },
+     "vsResample": {
+      "gained": 11,
+      "lost": 0,
+      "p": 0.0009765624999999999
+     },
+     "vsGeneric": {
+      "gained": 8,
+      "lost": 0,
+      "p": 0.007812500000000002
+     },
+     "vsV1": {
+      "gained": 0,
+      "lost": 1,
+      "p": 1
+     },
+     "meanAttempts": 2.3333333333333335,
+     "repairedShare": 0.9666666666666667,
+     "transitions": {
+      "n": 29,
+      "correct": 11,
+      "validWrong": 14,
+      "stillInvalid": 4
+     }
+    },
+    "v2fb+susp": {
+     "accuracy": {
+      "p": 0.36666666666666664,
+      "lo": 0.21873702204017678,
+      "hi": 0.5448675356639506,
+      "n": 30
+     },
+     "fixed": 11,
+     "broken": 0,
+     "stillInvalidV2": 5,
+     "vsAttempt1": {
+      "gained": 11,
+      "lost": 0,
+      "p": 0.0009765624999999999,
+      "diffCI": {
+       "est": 0.36666666666666664,
+       "lo": 0.2,
+       "hi": 0.5333333333333333
+      }
+     },
+     "vsResample": {
+      "gained": 11,
+      "lost": 0,
+      "p": 0.0009765624999999999
+     },
+     "vsGeneric": {
+      "gained": 8,
+      "lost": 0,
+      "p": 0.007812500000000002
+     },
+     "vsV1": {
+      "gained": 0,
+      "lost": 1,
+      "p": 1
+     },
+     "meanAttempts": 2.433333333333333,
+     "repairedShare": 1,
+     "transitions": {
+      "n": 29,
+      "correct": 11,
+      "validWrong": 13,
+      "stillInvalid": 5
+     }
+    }
+   }
+  },
+  "lookupSheet2": {
+   "n": 30,
+   "copiedSheet2": 28
+  },
+  "repairShipped": {
+   "n": 360,
+   "attempt1": {
+    "p": 0.6444444444444445,
+    "lo": 0.5937091466910047,
+    "hi": 0.6921295259621498,
+    "n": 360
+   },
+   "strategies": {
+    "resample": {
+     "accuracy": {
+      "p": 0.65,
+      "lo": 0.5993799860524319,
+      "hi": 0.6974524817027671,
+      "n": 360
+     },
+     "fixed": 2,
+     "broken": 0,
+     "stillInvalidV2": 38,
+     "vsAttempt1": {
+      "gained": 2,
+      "lost": 0,
+      "p": 0.5,
+      "diffCI": {
+       "est": 0.005555555555555556,
+       "lo": 0,
+       "hi": 0.013888888888888888
+      }
+     },
+     "vsResample": null,
+     "vsGeneric": null,
+     "vsV1": null,
+     "meanAttempts": 1.2222222222222223,
+     "repairedShare": 0.11666666666666667,
+     "transitions": {
+      "n": 42,
+      "correct": 2,
+      "validWrong": 2,
+      "stillInvalid": 38
+     }
+    },
+    "generic": {
+     "accuracy": {
+      "p": 0.6638888888888889,
+      "lo": 0.6135888435310434,
+      "hi": 0.7107281119792667,
+      "n": 360
+     },
+     "fixed": 7,
+     "broken": 0,
+     "stillInvalidV2": 32,
+     "vsAttempt1": {
+      "gained": 7,
+      "lost": 0,
+      "p": 0.015625000000000003,
+      "diffCI": {
+       "est": 0.019444444444444445,
+       "lo": 0.005555555555555556,
+       "hi": 0.03333333333333333
+      }
+     },
+     "vsResample": {
+      "gained": 6,
+      "lost": 1,
+      "p": 0.12500000000000006
+     },
+     "vsGeneric": null,
+     "vsV1": null,
+     "meanAttempts": 1.2083333333333333,
+     "repairedShare": 0.11666666666666667,
+     "transitions": {
+      "n": 42,
+      "correct": 7,
+      "validWrong": 3,
+      "stillInvalid": 32
+     }
+    },
+    "v1fb": {
+     "accuracy": {
+      "p": 0.6916666666666667,
+      "lo": 0.6421473918702468,
+      "hi": 0.7371385391502853,
+      "n": 360
+     },
+     "fixed": 17,
+     "broken": 0,
+     "stillInvalidV2": 19,
+     "vsAttempt1": {
+      "gained": 17,
+      "lost": 0,
+      "p": 0.000015258789062500003,
+      "diffCI": {
+       "est": 0.04722222222222222,
+       "lo": 0.027777777777777776,
+       "hi": 0.07222222222222222
+      }
+     },
+     "vsResample": {
+      "gained": 17,
+      "lost": 2,
+      "p": 0.0007286071777343753
+     },
+     "vsGeneric": {
+      "gained": 13,
+      "lost": 3,
+      "p": 0.021270751953125003
+     },
+     "vsV1": null,
+     "meanAttempts": 1.1222222222222222,
+     "repairedShare": 0.08611111111111111,
+     "transitions": {
+      "n": 42,
+      "correct": 17,
+      "validWrong": 6,
+      "stillInvalid": 19
+     }
+    },
+    "v2fb": {
+     "accuracy": {
+      "p": 0.7027777777777777,
+      "lo": 0.6536256613323942,
+      "hi": 0.7476478598922266,
+      "n": 360
+     },
+     "fixed": 21,
+     "broken": 0,
+     "stillInvalidV2": 9,
+     "vsAttempt1": {
+      "gained": 21,
+      "lost": 0,
+      "p": 9.536743164062499e-7,
+      "diffCI": {
+       "est": 0.058333333333333334,
+       "lo": 0.03611111111111111,
+       "hi": 0.08333333333333333
+      }
+     },
+     "vsResample": {
+      "gained": 20,
+      "lost": 1,
+      "p": 0.00002098083496093749
+     },
+     "vsGeneric": {
+      "gained": 14,
+      "lost": 0,
+      "p": 0.00012207031250000005
+     },
+     "vsV1": {
+      "gained": 5,
+      "lost": 1,
+      "p": 0.21875000000000006
+     },
+     "meanAttempts": 1.1611111111111112,
+     "repairedShare": 0.11666666666666667,
+     "transitions": {
+      "n": 42,
+      "correct": 21,
+      "validWrong": 12,
+      "stillInvalid": 9
+     }
+    },
+    "v2fb+susp": {
+     "accuracy": {
+      "p": 0.7305555555555555,
+      "lo": 0.6824671903951676,
+      "hi": 0.7737753063396753,
+      "n": 360
+     },
+     "fixed": 31,
+     "broken": 0,
+     "stillInvalidV2": 10,
+     "vsAttempt1": {
+      "gained": 31,
+      "lost": 0,
+      "p": 9.313225746154776e-10,
+      "diffCI": {
+       "est": 0.08611111111111111,
+       "lo": 0.058333333333333334,
+       "hi": 0.11388888888888889
+      }
+     },
+     "vsResample": {
+      "gained": 30,
+      "lost": 1,
+      "p": 2.980232238769526e-8
+     },
+     "vsGeneric": {
+      "gained": 24,
+      "lost": 0,
+      "p": 1.1920928955078144e-7
+     },
+     "vsV1": {
+      "gained": 16,
+      "lost": 2,
+      "p": 0.001312255859375
+     },
+     "meanAttempts": 1.2277777777777779,
+     "repairedShare": 0.16666666666666666,
+     "transitions": {
+      "n": 42,
+      "correct": 21,
+      "validWrong": 11,
+      "stillInvalid": 10
+     }
+    }
+   }
+  },
+  "cost": {
+   "attempt1:retr": {
+    "callsPerTask": 1,
+    "promptTokensPerTask": 941.7722222222222,
+    "completionTokensPerTask": 16.394444444444446,
+    "secondsPerTask": 2.6505750000000012
+   },
+   "repair:resample": {
+    "callsPerTask": 0.18333333333333332,
+    "promptTokensPerTask": 172.675,
+    "completionTokensPerTask": 3.4166666666666665,
+    "secondsPerTask": 0.41049444444444444
+   },
+   "repair:generic": {
+    "callsPerTask": 0.16944444444444445,
+    "promptTokensPerTask": 168.3388888888889,
+    "completionTokensPerTask": 3.191666666666667,
+    "secondsPerTask": 0.5167055555555555
+   },
+   "repair:v1fb": {
+    "callsPerTask": 0.10833333333333334,
+    "promptTokensPerTask": 118.93333333333334,
+    "completionTokensPerTask": 2.533333333333333,
+    "secondsPerTask": 0.3536194444444444
+   },
+   "repair:v2fb": {
+    "callsPerTask": 0.13333333333333333,
+    "promptTokensPerTask": 145.41944444444445,
+    "completionTokensPerTask": 3.0055555555555555,
+    "secondsPerTask": 0.38717777777777784
+   },
+   "repair:v2fb+susp": {
+    "callsPerTask": 0.1638888888888889,
+    "promptTokensPerTask": 181.05833333333334,
+    "completionTokensPerTask": 3.6055555555555556,
+    "secondsPerTask": 0.4734999999999999
+   }
+  }
+ },
+ {
+  "model": "llama3.2-3b",
+  "nPass2": 360,
+  "nPass1": 0,
+  "nValid": 360,
+  "context": {
+   "n": 360,
+   "arms": {
+    "flat": {
+     "overall": {
+      "p": 0.375,
+      "lo": 0.3265566013088555,
+      "hi": 0.42608300889514533,
+      "n": 360
+     },
+     "lookup": {
+      "n": 30,
+      "acc": {
+       "p": 0.03333333333333333,
+       "lo": 0.0059084379948573795,
+       "hi": 0.16670751396958874,
+       "n": 30
+      }
+     },
+     "other": {
+      "n": 330,
+      "acc": {
+       "p": 0.40606060606060607,
+       "lo": 0.35444970366164685,
+       "hi": 0.45983347734395585,
+       "n": 330
+      }
+     }
+    },
+    "final": {
+     "overall": {
+      "p": 0.3888888888888889,
+      "lo": 0.33995580797692265,
+      "hi": 0.4401682899821892,
+      "n": 360
+     },
+     "lookup": {
+      "n": 30,
+      "acc": {
+       "p": 0.03333333333333333,
+       "lo": 0.0059084379948573795,
+       "hi": 0.16670751396958874,
+       "n": 30
+      }
+     },
+     "other": {
+      "n": 330,
+      "acc": {
+       "p": 0.4212121212121212,
+       "lo": 0.36914513917926994,
+       "hi": 0.47509236747059036,
+       "n": 330
+      }
+     }
+    }
+   },
+   "tests": {
+    "final-vs-flat": {
+     "aOnly": 34,
+     "bOnly": 29,
+     "p": 0.6146550157654658
+    }
+   }
+  },
+  "taxonomy": {
+   "nWrong": 220,
+   "loud": 110,
+   "silent": 110,
+   "byErrorType": {
+    "DIV_BY_ZERO": 5,
+    "NAME": 31,
+    "ERROR": 20,
+    "VALUE": 22,
+    "NUM": 4,
+    "REF": 19,
+    "NA": 8,
+    "CYCLE": 1
+   },
+   "v1": {
+    "reject": 29,
+    "flag": 60
+   },
+   "v2": {
+    "reject": 49,
+    "flag": 88,
+    "suspicious": 21
+   },
+   "loudCaught": {
+    "v1": 27,
+    "v2": 49
+   },
+   "silentCaught": {
+    "v1reject": 2,
+    "v2reject": 0,
+    "v2flag": 11,
+    "v1flag": 5
+   },
+   "v2Reasons": {
+    "SUM is applied to C:C, a column of text (\"…\") — the result w": 1,
+    "Syntax error: Expected \"…\" or \"…\" in call to MAX.": 2,
+    "SUMIF ranges have different sizes: REF is NxN but REF is NxN": 1,
+    "Sheet \"…\" does not exist.": 25,
+    "Unbalanced parentheses: N unclosed \"…\".": 2,
+    "Syntax error: Unexpected character \"…\" at position N.": 3,
+    "Criterion \"…\" never occurs in Tasks!REF (\"…\").": 1,
+    "Criterion \"…\" never occurs in REF (\"…\").": 7,
+    "Syntax error: Unexpected \"…\" after the end of the expression": 9,
+    "Unknown function \"…\".": 3,
+    "Criterion \"…\" never occurs in A:A (\"…\").": 1,
+    "SUMIF is applied to REF, a column of text (\"…\") — the result": 2,
+    "COUNTIF expects N arguments but got N.": 1,
+    "SUMIFS is applied to REF, a column of text (\"…\") — the resul": 2,
+    "Lookup key \"…\" never occurs in REF (\"…\").": 1,
+    "Formula range REF includes its own cell (REF) — a circular r": 1,
+    "SUMIF is applied to Accounts!REF, a column of text (\"…\") — t": 1,
+    "\"…\" is not a function, named range or cell reference.": 1,
+    "SUM is applied to REF, a column of text (\"…\") — the result w": 1,
+    "Criterion \"…\" never occurs in Orders!A:A (\"…\").": 1,
+    "Syntax error: Expected \"…\" but found \"…\".": 1,
+    "MAX is applied to C:C, a column of text (\"…\") — the result w": 1,
+    "SUMIFS is applied to H:H, a column of text (\"…\") — the resul": 1
+   }
+  },
+  "falseAlarms": {
+   "nCorrect": 140,
+   "v1Reject": 0,
+   "v2Reject": 0,
+   "v2Suspicious": 0
+  },
+  "gate": {
+   "accepted": 311,
+   "rejected": 49,
+   "accuracyAccepted": {
+    "p": 0.45016077170418006,
+    "lo": 0.3958099621460336,
+    "hi": 0.5057278270152462,
+    "n": 311
+   },
+   "accuracyRejected": {
+    "p": 0,
+    "lo": 0,
+    "hi": 0.07270029673590504,
+    "n": 49
+   },
+   "accuracyAll": {
+    "p": 0.3888888888888889,
+    "lo": 0.33995580797692265,
+    "hi": 0.4401682899821892,
+    "n": 360
+   }
+  },
+  "repair": {
+   "n": 360,
+   "attempt1": {
+    "p": 0.3888888888888889,
+    "lo": 0.33995580797692265,
+    "hi": 0.4401682899821892,
+    "n": 360
+   },
+   "strategies": {
+    "resample": {
+     "accuracy": {
+      "p": 0.39166666666666666,
+      "lo": 0.34264075070584477,
+      "hi": 0.4429802448042893,
+      "n": 360
+     },
+     "fixed": 1,
+     "broken": 0,
+     "stillInvalidV2": 44,
+     "vsAttempt1": {
+      "gained": 1,
+      "lost": 0,
+      "p": 1,
+      "diffCI": {
+       "est": 0.002777777777777778,
+       "lo": 0,
+       "hi": 0.008333333333333333
+      }
+     },
+     "vsResample": null,
+     "vsGeneric": null,
+     "vsV1": null,
+     "meanAttempts": 1.261111111111111,
+     "repairedShare": 0.1361111111111111,
+     "transitions": {
+      "n": 49,
+      "correct": 1,
+      "validWrong": 4,
+      "stillInvalid": 44
+     }
+    },
+    "generic": {
+     "accuracy": {
+      "p": 0.3972222222222222,
+      "lo": 0.34801568498958974,
+      "hi": 0.4485991056225887,
+      "n": 360
+     },
+     "fixed": 3,
+     "broken": 0,
+     "stillInvalidV2": 40,
+     "vsAttempt1": {
+      "gained": 3,
+      "lost": 0,
+      "p": 0.25000000000000006,
+      "diffCI": {
+       "est": 0.008333333333333333,
+       "lo": 0,
+       "hi": 0.019444444444444445
+      }
+     },
+     "vsResample": {
+      "gained": 2,
+      "lost": 0,
+      "p": 0.5
+     },
+     "vsGeneric": null,
+     "vsV1": null,
+     "meanAttempts": 1.2527777777777778,
+     "repairedShare": 0.1361111111111111,
+     "transitions": {
+      "n": 49,
+      "correct": 3,
+      "validWrong": 6,
+      "stillInvalid": 40
+     }
+    },
+    "v1fb": {
+     "accuracy": {
+      "p": 0.3972222222222222,
+      "lo": 0.34801568498958974,
+      "hi": 0.4485991056225887,
+      "n": 360
+     },
+     "fixed": 3,
+     "broken": 0,
+     "stillInvalidV2": 29,
+     "vsAttempt1": {
+      "gained": 3,
+      "lost": 0,
+      "p": 0.25000000000000006,
+      "diffCI": {
+       "est": 0.008333333333333333,
+       "lo": 0,
+       "hi": 0.019444444444444445
+      }
+     },
+     "vsResample": {
+      "gained": 3,
+      "lost": 1,
+      "p": 0.625
+     },
+     "vsGeneric": {
+      "gained": 3,
+      "lost": 3,
+      "p": 1
+     },
+     "vsV1": null,
+     "meanAttempts": 1.1333333333333333,
+     "repairedShare": 0.08055555555555556,
+     "transitions": {
+      "n": 49,
+      "correct": 3,
+      "validWrong": 17,
+      "stillInvalid": 29
+     }
+    },
+    "v2fb": {
+     "accuracy": {
+      "p": 0.4,
+      "lo": 0.3507056643146375,
+      "hi": 0.45140602384856326,
+      "n": 360
+     },
+     "fixed": 4,
+     "broken": 0,
+     "stillInvalidV2": 15,
+     "vsAttempt1": {
+      "gained": 4,
+      "lost": 0,
+      "p": 0.125,
+      "diffCI": {
+       "est": 0.011111111111111112,
+       "lo": 0.002777777777777778,
+       "hi": 0.022222222222222223
+      }
+     },
+     "vsResample": {
+      "gained": 3,
+      "lost": 0,
+      "p": 0.25000000000000006
+     },
+     "vsGeneric": {
+      "gained": 3,
+      "lost": 2,
+      "p": 0.9999999999999999
+     },
+     "vsV1": {
+      "gained": 1,
+      "lost": 0,
+      "p": 1
+     },
+     "meanAttempts": 1.211111111111111,
+     "repairedShare": 0.1361111111111111,
+     "transitions": {
+      "n": 49,
+      "correct": 4,
+      "validWrong": 30,
+      "stillInvalid": 15
+     }
+    },
+    "v2fb+susp": {
+     "accuracy": {
+      "p": 0.4,
+      "lo": 0.3507056643146375,
+      "hi": 0.45140602384856326,
+      "n": 360
+     },
+     "fixed": 4,
+     "broken": 0,
+     "stillInvalidV2": 18,
+     "vsAttempt1": {
+      "gained": 4,
+      "lost": 0,
+      "p": 0.125,
+      "diffCI": {
+       "est": 0.011111111111111112,
+       "lo": 0.002777777777777778,
+       "hi": 0.022222222222222223
+      }
+     },
+     "vsResample": {
+      "gained": 4,
+      "lost": 1,
+      "p": 0.375
+     },
+     "vsGeneric": {
+      "gained": 4,
+      "lost": 3,
+      "p": 1
+     },
+     "vsV1": {
+      "gained": 1,
+      "lost": 0,
+      "p": 1
+     },
+     "meanAttempts": 1.3083333333333333,
+     "repairedShare": 0.19166666666666668,
+     "transitions": {
+      "n": 49,
+      "correct": 3,
+      "validWrong": 28,
+      "stillInvalid": 18
+     }
+    }
+   }
+  },
+  "repairLookup": {
+   "n": 30,
+   "attempt1": {
+    "p": 0.03333333333333333,
+    "lo": 0.0059084379948573795,
+    "hi": 0.16670751396958874,
+    "n": 30
+   },
+   "strategies": {
+    "resample": {
+     "accuracy": {
+      "p": 0.03333333333333333,
+      "lo": 0.0059084379948573795,
+      "hi": 0.16670751396958874,
+      "n": 30
+     },
+     "fixed": 0,
+     "broken": 0,
+     "stillInvalidV2": 22,
+     "vsAttempt1": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1,
+      "diffCI": {
+       "est": 0,
+       "lo": 0,
+       "hi": 0
+      }
+     },
+     "vsResample": null,
+     "vsGeneric": null,
+     "vsV1": null,
+     "meanAttempts": 2.466666666666667,
+     "repairedShare": 0.7333333333333333,
+     "transitions": {
+      "n": 22,
+      "correct": 0,
+      "validWrong": 0,
+      "stillInvalid": 22
+     }
+    },
+    "generic": {
+     "accuracy": {
+      "p": 0.03333333333333333,
+      "lo": 0.0059084379948573795,
+      "hi": 0.16670751396958874,
+      "n": 30
+     },
+     "fixed": 0,
+     "broken": 0,
+     "stillInvalidV2": 22,
+     "vsAttempt1": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1,
+      "diffCI": {
+       "est": 0,
+       "lo": 0,
+       "hi": 0
+      }
+     },
+     "vsResample": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "vsGeneric": null,
+     "vsV1": null,
+     "meanAttempts": 2.466666666666667,
+     "repairedShare": 0.7333333333333333,
+     "transitions": {
+      "n": 22,
+      "correct": 0,
+      "validWrong": 0,
+      "stillInvalid": 22
+     }
+    },
+    "v1fb": {
+     "accuracy": {
+      "p": 0.13333333333333333,
+      "lo": 0.05309569424218104,
+      "hi": 0.2968168394441695,
+      "n": 30
+     },
+     "fixed": 3,
+     "broken": 0,
+     "stillInvalidV2": 3,
+     "vsAttempt1": {
+      "gained": 3,
+      "lost": 0,
+      "p": 0.25000000000000006,
+      "diffCI": {
+       "est": 0.1,
+       "lo": 0,
+       "hi": 0.23333333333333334
+      }
+     },
+     "vsResample": {
+      "gained": 3,
+      "lost": 0,
+      "p": 0.25000000000000006
+     },
+     "vsGeneric": {
+      "gained": 3,
+      "lost": 0,
+      "p": 0.25000000000000006
+     },
+     "vsV1": null,
+     "meanAttempts": 2.2666666666666666,
+     "repairedShare": 0.8,
+     "transitions": {
+      "n": 22,
+      "correct": 3,
+      "validWrong": 16,
+      "stillInvalid": 3
+     }
+    },
+    "v2fb": {
+     "accuracy": {
+      "p": 0.13333333333333333,
+      "lo": 0.05309569424218104,
+      "hi": 0.2968168394441695,
+      "n": 30
+     },
+     "fixed": 3,
+     "broken": 0,
+     "stillInvalidV2": 2,
+     "vsAttempt1": {
+      "gained": 3,
+      "lost": 0,
+      "p": 0.25000000000000006,
+      "diffCI": {
+       "est": 0.1,
+       "lo": 0,
+       "hi": 0.23333333333333334
+      }
+     },
+     "vsResample": {
+      "gained": 3,
+      "lost": 0,
+      "p": 0.25000000000000006
+     },
+     "vsGeneric": {
+      "gained": 3,
+      "lost": 0,
+      "p": 0.25000000000000006
+     },
+     "vsV1": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "meanAttempts": 2.1,
+     "repairedShare": 0.7333333333333333,
+     "transitions": {
+      "n": 22,
+      "correct": 3,
+      "validWrong": 17,
+      "stillInvalid": 2
+     }
+    },
+    "v2fb+susp": {
+     "accuracy": {
+      "p": 0.13333333333333333,
+      "lo": 0.05309569424218104,
+      "hi": 0.2968168394441695,
+      "n": 30
+     },
+     "fixed": 3,
+     "broken": 0,
+     "stillInvalidV2": 2,
+     "vsAttempt1": {
+      "gained": 3,
+      "lost": 0,
+      "p": 0.25000000000000006,
+      "diffCI": {
+       "est": 0.1,
+       "lo": 0,
+       "hi": 0.23333333333333334
+      }
+     },
+     "vsResample": {
+      "gained": 3,
+      "lost": 0,
+      "p": 0.25000000000000006
+     },
+     "vsGeneric": {
+      "gained": 3,
+      "lost": 0,
+      "p": 0.25000000000000006
+     },
+     "vsV1": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "meanAttempts": 2.4,
+     "repairedShare": 0.9,
+     "transitions": {
+      "n": 22,
+      "correct": 3,
+      "validWrong": 17,
+      "stillInvalid": 2
+     }
+    }
+   }
+  },
+  "lookupSheet2": {
+   "n": 30,
+   "copiedSheet2": 22
+  },
+  "cost": {
+   "attempt1:flat": {
+    "callsPerTask": 1,
+    "promptTokensPerTask": 563.7722222222222,
+    "completionTokensPerTask": 15.883333333333333,
+    "secondsPerTask": 0.8310138888888889
+   },
+   "attempt1:retr": {
+    "callsPerTask": 1,
+    "promptTokensPerTask": 951.7722222222222,
+    "completionTokensPerTask": 16.480555555555554,
+    "secondsPerTask": 0.9088638888888885
+   },
+   "repair:v2fb+susp": {
+    "callsPerTask": 0.30833333333333335,
+    "promptTokensPerTask": 352.8777777777778,
+    "completionTokensPerTask": 7.8277777777777775,
+    "secondsPerTask": 0.317475
+   },
+   "repair:resample": {
+    "callsPerTask": 0.2611111111111111,
+    "promptTokensPerTask": 248.9388888888889,
+    "completionTokensPerTask": 5.813888888888889,
+    "secondsPerTask": 0.22414166666666668
+   },
+   "repair:generic": {
+    "callsPerTask": 0.25277777777777777,
+    "promptTokensPerTask": 257.4472222222222,
+    "completionTokensPerTask": 6.597222222222222,
+    "secondsPerTask": 0.2701333333333334
+   },
+   "repair:v2fb": {
+    "callsPerTask": 0.2111111111111111,
+    "promptTokensPerTask": 239.17222222222222,
+    "completionTokensPerTask": 5.966666666666667,
+    "secondsPerTask": 0.23674722222222222
+   },
+   "repair:v1fb": {
+    "callsPerTask": 0.13333333333333333,
+    "promptTokensPerTask": 154.6027777777778,
+    "completionTokensPerTask": 4.269444444444445,
+    "secondsPerTask": 0.16778055555555557
+   }
+  }
+ },
+ {
+  "model": "llama3.1-8b-heldout",
+  "nPass2": 180,
+  "nPass1": 0,
+  "nValid": 180,
+  "context": {
+   "n": 180,
+   "arms": {
+    "flat": {
+     "overall": {
+      "p": 0.7666666666666667,
+      "lo": 0.6997008662253994,
+      "hi": 0.822487800539903,
+      "n": 180
+     },
+     "lookup": {
+      "n": 9,
+      "acc": {
+       "p": 0,
+       "lo": 0,
+       "hi": 0.2991527535509594,
+       "n": 9
+      }
+     },
+     "other": {
+      "n": 171,
+      "acc": {
+       "p": 0.8070175438596491,
+       "lo": 0.7413870539603187,
+       "hi": 0.8591565237694663,
+       "n": 171
+      }
+     }
+    },
+    "final": {
+     "overall": {
+      "p": 0.7222222222222222,
+      "lo": 0.652665499946382,
+      "hi": 0.7824917223580367,
+      "n": 180
+     },
+     "lookup": {
+      "n": 9,
+      "acc": {
+       "p": 0,
+       "lo": 0,
+       "hi": 0.2991527535509594,
+       "n": 9
+      }
+     },
+     "other": {
+      "n": 171,
+      "acc": {
+       "p": 0.7602339181286549,
+       "lo": 0.6909732510146614,
+       "hi": 0.8180589243943944,
+       "n": 171
+      }
+     }
+    }
+   },
+   "tests": {
+    "final-vs-flat": {
+     "aOnly": 7,
+     "bOnly": 15,
+     "p": 0.1338005065917968
+    }
+   }
+  },
+  "taxonomy": {
+   "nWrong": 50,
+   "loud": 29,
+   "silent": 21,
+   "byErrorType": {
+    "VALUE": 7,
+    "NAME": 12,
+    "REF": 8,
+    "NUM": 1,
+    "ERROR": 1
+   },
+   "v1": {
+    "reject": 8,
+    "flag": 27
+   },
+   "v2": {
+    "reject": 11,
+    "flag": 19,
+    "suspicious": 2
+   },
+   "loudCaught": {
+    "v1": 8,
+    "v2": 11
+   },
+   "silentCaught": {
+    "v1reject": 0,
+    "v2reject": 0,
+    "v2flag": 2,
+    "v1flag": 6
+   },
+   "v2Reasons": {
+    "Sheet \"…\" does not exist.": 8,
+    "\"…\" is not a function, named range or cell reference.": 2,
+    "MAX is applied to REF, a column of text (\"…\") — the result w": 1,
+    "SUMIF is applied to REF, a column of text (\"…\") — the result": 1,
+    "Syntax error: Unexpected character \"…\" at position N.": 1
+   }
+  },
+  "falseAlarms": {
+   "nCorrect": 130,
+   "v1Reject": 0,
+   "v2Reject": 0,
+   "v2Suspicious": 0
+  },
+  "gate": {
+   "accepted": 169,
+   "rejected": 11,
+   "accuracyAccepted": {
+    "p": 0.7692307692307693,
+    "lo": 0.7001494674822465,
+    "hi": 0.8263441544235911,
+    "n": 169
+   },
+   "accuracyRejected": {
+    "p": 0,
+    "lo": 2.7755575615628914e-17,
+    "hi": 0.2588400172488141,
+    "n": 11
+   },
+   "accuracyAll": {
+    "p": 0.7222222222222222,
+    "lo": 0.652665499946382,
+    "hi": 0.7824917223580367,
+    "n": 180
+   }
+  },
+  "repair": {
+   "n": 180,
+   "attempt1": {
+    "p": 0.7222222222222222,
+    "lo": 0.652665499946382,
+    "hi": 0.7824917223580367,
+    "n": 180
+   },
+   "strategies": {
+    "resample": {
+     "accuracy": {
+      "p": 0.7277777777777777,
+      "lo": 0.6585001485735321,
+      "hi": 0.7875360042884968,
+      "n": 180
+     },
+     "fixed": 1,
+     "broken": 0,
+     "stillInvalidV2": 9,
+     "vsAttempt1": {
+      "gained": 1,
+      "lost": 0,
+      "p": 1,
+      "diffCI": {
+       "est": 0.005555555555555556,
+       "lo": 0,
+       "hi": 0.016666666666666666
+      }
+     },
+     "vsResample": null,
+     "vsGeneric": null,
+     "vsV1": null,
+     "meanAttempts": 1.1111111111111112,
+     "repairedShare": 0.06111111111111111,
+     "transitions": {
+      "n": 11,
+      "correct": 1,
+      "validWrong": 1,
+      "stillInvalid": 9
+     }
+    },
+    "generic": {
+     "accuracy": {
+      "p": 0.7277777777777777,
+      "lo": 0.6585001485735321,
+      "hi": 0.7875360042884968,
+      "n": 180
+     },
+     "fixed": 1,
+     "broken": 0,
+     "stillInvalidV2": 7,
+     "vsAttempt1": {
+      "gained": 1,
+      "lost": 0,
+      "p": 1,
+      "diffCI": {
+       "est": 0.005555555555555556,
+       "lo": 0,
+       "hi": 0.016666666666666666
+      }
+     },
+     "vsResample": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "vsGeneric": null,
+     "vsV1": null,
+     "meanAttempts": 1.1,
+     "repairedShare": 0.06111111111111111,
+     "transitions": {
+      "n": 11,
+      "correct": 1,
+      "validWrong": 3,
+      "stillInvalid": 7
+     }
+    },
+    "v1fb": {
+     "accuracy": {
+      "p": 0.7444444444444445,
+      "lo": 0.6760787580147182,
+      "hi": 0.8025941865201424,
+      "n": 180
+     },
+     "fixed": 4,
+     "broken": 0,
+     "stillInvalidV2": 5,
+     "vsAttempt1": {
+      "gained": 4,
+      "lost": 0,
+      "p": 0.125,
+      "diffCI": {
+       "est": 0.022222222222222223,
+       "lo": 0.005555555555555556,
+       "hi": 0.044444444444444446
+      }
+     },
+     "vsResample": {
+      "gained": 4,
+      "lost": 1,
+      "p": 0.375
+     },
+     "vsGeneric": {
+      "gained": 4,
+      "lost": 1,
+      "p": 0.375
+     },
+     "vsV1": null,
+     "meanAttempts": 1.0777777777777777,
+     "repairedShare": 0.044444444444444446,
+     "transitions": {
+      "n": 11,
+      "correct": 4,
+      "validWrong": 2,
+      "stillInvalid": 5
+     }
+    },
+    "v2fb": {
+     "accuracy": {
+      "p": 0.75,
+      "lo": 0.681964014563061,
+      "hi": 0.80758786052941,
+      "n": 180
+     },
+     "fixed": 5,
+     "broken": 0,
+     "stillInvalidV2": 2,
+     "vsAttempt1": {
+      "gained": 5,
+      "lost": 0,
+      "p": 0.0625,
+      "diffCI": {
+       "est": 0.027777777777777776,
+       "lo": 0.005555555555555556,
+       "hi": 0.05555555555555555
+      }
+     },
+     "vsResample": {
+      "gained": 4,
+      "lost": 0,
+      "p": 0.125
+     },
+     "vsGeneric": {
+      "gained": 4,
+      "lost": 0,
+      "p": 0.125
+     },
+     "vsV1": {
+      "gained": 2,
+      "lost": 1,
+      "p": 1
+     },
+     "meanAttempts": 1.1,
+     "repairedShare": 0.06111111111111111,
+     "transitions": {
+      "n": 11,
+      "correct": 5,
+      "validWrong": 4,
+      "stillInvalid": 2
+     }
+    },
+    "v2fb+susp": {
+     "accuracy": {
+      "p": 0.7611111111111111,
+      "lo": 0.6937747633253338,
+      "hi": 0.8175349728823579,
+      "n": 180
+     },
+     "fixed": 7,
+     "broken": 0,
+     "stillInvalidV2": 1,
+     "vsAttempt1": {
+      "gained": 7,
+      "lost": 0,
+      "p": 0.015625000000000003,
+      "diffCI": {
+       "est": 0.03888888888888889,
+       "lo": 0.011111111111111112,
+       "hi": 0.06666666666666667
+      }
+     },
+     "vsResample": {
+      "gained": 6,
+      "lost": 0,
+      "p": 0.031250000000000014
+     },
+     "vsGeneric": {
+      "gained": 6,
+      "lost": 0,
+      "p": 0.031250000000000014
+     },
+     "vsV1": {
+      "gained": 4,
+      "lost": 1,
+      "p": 0.375
+     },
+     "meanAttempts": 1.1166666666666667,
+     "repairedShare": 0.07222222222222222,
+     "transitions": {
+      "n": 11,
+      "correct": 6,
+      "validWrong": 4,
+      "stillInvalid": 1
+     }
+    }
+   }
+  },
+  "repairLookup": {
+   "n": 9,
+   "attempt1": {
+    "p": 0,
+    "lo": 0,
+    "hi": 0.2991527535509594,
+    "n": 9
+   },
+   "strategies": {
+    "resample": {
+     "accuracy": {
+      "p": 0,
+      "lo": 0,
+      "hi": 0.2991527535509594,
+      "n": 9
+     },
+     "fixed": 0,
+     "broken": 0,
+     "stillInvalidV2": 8,
+     "vsAttempt1": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1,
+      "diffCI": {
+       "est": 0,
+       "lo": 0,
+       "hi": 0
+      }
+     },
+     "vsResample": null,
+     "vsGeneric": null,
+     "vsV1": null,
+     "meanAttempts": 2.7777777777777777,
+     "repairedShare": 0.8888888888888888,
+     "transitions": {
+      "n": 8,
+      "correct": 0,
+      "validWrong": 0,
+      "stillInvalid": 8
+     }
+    },
+    "generic": {
+     "accuracy": {
+      "p": 0,
+      "lo": 0,
+      "hi": 0.2991527535509594,
+      "n": 9
+     },
+     "fixed": 0,
+     "broken": 0,
+     "stillInvalidV2": 7,
+     "vsAttempt1": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1,
+      "diffCI": {
+       "est": 0,
+       "lo": 0,
+       "hi": 0
+      }
+     },
+     "vsResample": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "vsGeneric": null,
+     "vsV1": null,
+     "meanAttempts": 2.6666666666666665,
+     "repairedShare": 0.8888888888888888,
+     "transitions": {
+      "n": 8,
+      "correct": 0,
+      "validWrong": 1,
+      "stillInvalid": 7
+     }
+    },
+    "v1fb": {
+     "accuracy": {
+      "p": 0.4444444444444444,
+      "lo": 0.188775429471914,
+      "hi": 0.7333526542559703,
+      "n": 9
+     },
+     "fixed": 4,
+     "broken": 0,
+     "stillInvalidV2": 2,
+     "vsAttempt1": {
+      "gained": 4,
+      "lost": 0,
+      "p": 0.125,
+      "diffCI": {
+       "est": 0.4444444444444444,
+       "lo": 0.1111111111111111,
+       "hi": 0.7777777777777778
+      }
+     },
+     "vsResample": {
+      "gained": 4,
+      "lost": 0,
+      "p": 0.125
+     },
+     "vsGeneric": {
+      "gained": 4,
+      "lost": 0,
+      "p": 0.125
+     },
+     "vsV1": null,
+     "meanAttempts": 2.5555555555555554,
+     "repairedShare": 0.8888888888888888,
+     "transitions": {
+      "n": 8,
+      "correct": 4,
+      "validWrong": 2,
+      "stillInvalid": 2
+     }
+    },
+    "v2fb": {
+     "accuracy": {
+      "p": 0.4444444444444444,
+      "lo": 0.188775429471914,
+      "hi": 0.7333526542559703,
+      "n": 9
+     },
+     "fixed": 4,
+     "broken": 0,
+     "stillInvalidV2": 2,
+     "vsAttempt1": {
+      "gained": 4,
+      "lost": 0,
+      "p": 0.125,
+      "diffCI": {
+       "est": 0.4444444444444444,
+       "lo": 0.1111111111111111,
+       "hi": 0.7777777777777778
+      }
+     },
+     "vsResample": {
+      "gained": 4,
+      "lost": 0,
+      "p": 0.125
+     },
+     "vsGeneric": {
+      "gained": 4,
+      "lost": 0,
+      "p": 0.125
+     },
+     "vsV1": {
+      "gained": 1,
+      "lost": 1,
+      "p": 1
+     },
+     "meanAttempts": 2.5555555555555554,
+     "repairedShare": 0.8888888888888888,
+     "transitions": {
+      "n": 8,
+      "correct": 4,
+      "validWrong": 2,
+      "stillInvalid": 2
+     }
+    },
+    "v2fb+susp": {
+     "accuracy": {
+      "p": 0.5555555555555556,
+      "lo": 0.2666473457440297,
+      "hi": 0.811224570528086,
+      "n": 9
+     },
+     "fixed": 5,
+     "broken": 0,
+     "stillInvalidV2": 1,
+     "vsAttempt1": {
+      "gained": 5,
+      "lost": 0,
+      "p": 0.0625,
+      "diffCI": {
+       "est": 0.5555555555555556,
+       "lo": 0.2222222222222222,
+       "hi": 0.8888888888888888
+      }
+     },
+     "vsResample": {
+      "gained": 5,
+      "lost": 0,
+      "p": 0.0625
+     },
+     "vsGeneric": {
+      "gained": 5,
+      "lost": 0,
+      "p": 0.0625
+     },
+     "vsV1": {
+      "gained": 2,
+      "lost": 1,
+      "p": 1
+     },
+     "meanAttempts": 2.7777777777777777,
+     "repairedShare": 1,
+     "transitions": {
+      "n": 8,
+      "correct": 5,
+      "validWrong": 2,
+      "stillInvalid": 1
+     }
+    }
+   }
+  },
+  "lookupSheet2": {
+   "n": 9,
+   "copiedSheet2": 8
+  },
+  "cost": {
+   "attempt1:flat": {
+    "callsPerTask": 1,
+    "promptTokensPerTask": 554.3777777777777,
+    "completionTokensPerTask": 15.605555555555556,
+    "secondsPerTask": 2.573961111111112
+   },
+   "attempt1:retr": {
+    "callsPerTask": 1,
+    "promptTokensPerTask": 944.4,
+    "completionTokensPerTask": 15.411111111111111,
+    "secondsPerTask": 2.6223444444444457
+   },
+   "repair:resample": {
+    "callsPerTask": 0.1111111111111111,
+    "promptTokensPerTask": 103.77777777777777,
+    "completionTokensPerTask": 1.9666666666666666,
+    "secondsPerTask": 0.23722222222222225
+   },
+   "repair:generic": {
+    "callsPerTask": 0.1,
+    "promptTokensPerTask": 98.33888888888889,
+    "completionTokensPerTask": 1.7444444444444445,
+    "secondsPerTask": 0.30574999999999997
+   },
+   "repair:v1fb": {
+    "callsPerTask": 0.07777777777777778,
+    "promptTokensPerTask": 87.58888888888889,
+    "completionTokensPerTask": 3.2666666666666666,
+    "secondsPerTask": 0.42475000000000007
+   },
+   "repair:v2fb": {
+    "callsPerTask": 0.1,
+    "promptTokensPerTask": 110.41111111111111,
+    "completionTokensPerTask": 2.4,
+    "secondsPerTask": 0.31716111111111106
+   },
+   "repair:v2fb+susp": {
+    "callsPerTask": 0.11666666666666667,
+    "promptTokensPerTask": 129.46666666666667,
+    "completionTokensPerTask": 2.611111111111111,
+    "secondsPerTask": 0.3417166666666667
+   }
+  }
+ },
+ {
+  "model": "gemini-3.1-flash-lite",
+  "nPass2": 241,
+  "nPass1": 0,
+  "nValid": 241,
+  "context": {
+   "n": 241,
+   "arms": {
+    "flat": {
+     "overall": {
+      "p": 0.8921161825726142,
+      "lo": 0.8466198544531093,
+      "hi": 0.925307791829222,
+      "n": 241
+     },
+     "lookup": {
+      "n": 22,
+      "acc": {
+       "p": 0.3181818181818182,
+       "lo": 0.1636038735469248,
+       "hi": 0.5268177721716065,
+       "n": 22
+      }
+     },
+     "other": {
+      "n": 219,
+      "acc": {
+       "p": 0.9497716894977168,
+       "lo": 0.912310758244877,
+       "hi": 0.9717252565746181,
+       "n": 219
+      }
+     }
+    },
+    "final": {
+     "overall": {
+      "p": 0.966804979253112,
+      "lo": 0.9358758695145563,
+      "hi": 0.9830856141548855,
+      "n": 241
+     },
+     "lookup": {
+      "n": 22,
+      "acc": {
+       "p": 0.9545454545454546,
+       "lo": 0.7820151050048196,
+       "hi": 0.9919307806988522,
+       "n": 22
+      }
+     },
+     "other": {
+      "n": 219,
+      "acc": {
+       "p": 0.9680365296803652,
+       "lo": 0.9355034719340031,
+       "hi": 0.9844324825735932,
+       "n": 219
+      }
+     }
+    }
+   },
+   "tests": {
+    "final-vs-flat": {
+     "aOnly": 19,
+     "bOnly": 1,
+     "p": 0.00004005432128906248
+    }
+   }
+  },
+  "taxonomy": {
+   "nWrong": 8,
+   "loud": 1,
+   "silent": 7,
+   "byErrorType": {
+    "NA": 1
+   },
+   "v1": {
+    "reject": 0,
+    "flag": 0
+   },
+   "v2": {
+    "reject": 0,
+    "flag": 0,
+    "suspicious": 0
+   },
+   "loudCaught": {
+    "v1": 0,
+    "v2": 0
+   },
+   "silentCaught": {
+    "v1reject": 0,
+    "v2reject": 0,
+    "v2flag": 0,
+    "v1flag": 0
+   },
+   "v2Reasons": {}
+  },
+  "falseAlarms": {
+   "nCorrect": 233,
+   "v1Reject": 0,
+   "v2Reject": 0,
+   "v2Suspicious": 0
+  },
+  "gate": {
+   "accepted": 241,
+   "rejected": 0,
+   "accuracyAccepted": {
+    "p": 0.966804979253112,
+    "lo": 0.9358758695145563,
+    "hi": 0.9830856141548855,
+    "n": 241
+   },
+   "accuracyRejected": {
+    "p": null,
+    "lo": null,
+    "hi": null,
+    "n": 0
+   },
+   "accuracyAll": {
+    "p": 0.966804979253112,
+    "lo": 0.9358758695145563,
+    "hi": 0.9830856141548855,
+    "n": 241
+   }
+  },
+  "repair": {
+   "n": 241,
+   "attempt1": {
+    "p": 0.966804979253112,
+    "lo": 0.9358758695145563,
+    "hi": 0.9830856141548855,
+    "n": 241
+   },
+   "strategies": {
+    "resample": {
+     "accuracy": {
+      "p": 0.966804979253112,
+      "lo": 0.9358758695145563,
+      "hi": 0.9830856141548855,
+      "n": 241
+     },
+     "fixed": 0,
+     "broken": 0,
+     "stillInvalidV2": 0,
+     "vsAttempt1": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1,
+      "diffCI": {
+       "est": 0,
+       "lo": 0,
+       "hi": 0
+      }
+     },
+     "vsResample": null,
+     "vsGeneric": null,
+     "vsV1": null,
+     "meanAttempts": 1,
+     "repairedShare": 0,
+     "transitions": {
+      "n": 0,
+      "correct": 0,
+      "validWrong": 0,
+      "stillInvalid": 0
+     }
+    },
+    "generic": {
+     "accuracy": {
+      "p": 0.966804979253112,
+      "lo": 0.9358758695145563,
+      "hi": 0.9830856141548855,
+      "n": 241
+     },
+     "fixed": 0,
+     "broken": 0,
+     "stillInvalidV2": 0,
+     "vsAttempt1": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1,
+      "diffCI": {
+       "est": 0,
+       "lo": 0,
+       "hi": 0
+      }
+     },
+     "vsResample": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "vsGeneric": null,
+     "vsV1": null,
+     "meanAttempts": 1,
+     "repairedShare": 0,
+     "transitions": {
+      "n": 0,
+      "correct": 0,
+      "validWrong": 0,
+      "stillInvalid": 0
+     }
+    },
+    "v1fb": {
+     "accuracy": {
+      "p": 0.966804979253112,
+      "lo": 0.9358758695145563,
+      "hi": 0.9830856141548855,
+      "n": 241
+     },
+     "fixed": 0,
+     "broken": 0,
+     "stillInvalidV2": 0,
+     "vsAttempt1": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1,
+      "diffCI": {
+       "est": 0,
+       "lo": 0,
+       "hi": 0
+      }
+     },
+     "vsResample": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "vsGeneric": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "vsV1": null,
+     "meanAttempts": 1,
+     "repairedShare": 0,
+     "transitions": {
+      "n": 0,
+      "correct": 0,
+      "validWrong": 0,
+      "stillInvalid": 0
+     }
+    },
+    "v2fb": {
+     "accuracy": {
+      "p": 0.966804979253112,
+      "lo": 0.9358758695145563,
+      "hi": 0.9830856141548855,
+      "n": 241
+     },
+     "fixed": 0,
+     "broken": 0,
+     "stillInvalidV2": 0,
+     "vsAttempt1": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1,
+      "diffCI": {
+       "est": 0,
+       "lo": 0,
+       "hi": 0
+      }
+     },
+     "vsResample": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "vsGeneric": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "vsV1": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "meanAttempts": 1,
+     "repairedShare": 0,
+     "transitions": {
+      "n": 0,
+      "correct": 0,
+      "validWrong": 0,
+      "stillInvalid": 0
+     }
+    },
+    "v2fb+susp": {
+     "accuracy": {
+      "p": 0.966804979253112,
+      "lo": 0.9358758695145563,
+      "hi": 0.9830856141548855,
+      "n": 241
+     },
+     "fixed": 0,
+     "broken": 0,
+     "stillInvalidV2": 0,
+     "vsAttempt1": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1,
+      "diffCI": {
+       "est": 0,
+       "lo": 0,
+       "hi": 0
+      }
+     },
+     "vsResample": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "vsGeneric": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "vsV1": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "meanAttempts": 1,
+     "repairedShare": 0,
+     "transitions": {
+      "n": 0,
+      "correct": 0,
+      "validWrong": 0,
+      "stillInvalid": 0
+     }
+    }
+   }
+  },
+  "repairLookup": {
+   "n": 22,
+   "attempt1": {
+    "p": 0.9545454545454546,
+    "lo": 0.7820151050048196,
+    "hi": 0.9919307806988522,
+    "n": 22
+   },
+   "strategies": {
+    "resample": {
+     "accuracy": {
+      "p": 0.9545454545454546,
+      "lo": 0.7820151050048196,
+      "hi": 0.9919307806988522,
+      "n": 22
+     },
+     "fixed": 0,
+     "broken": 0,
+     "stillInvalidV2": 0,
+     "vsAttempt1": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1,
+      "diffCI": {
+       "est": 0,
+       "lo": 0,
+       "hi": 0
+      }
+     },
+     "vsResample": null,
+     "vsGeneric": null,
+     "vsV1": null,
+     "meanAttempts": 1,
+     "repairedShare": 0,
+     "transitions": {
+      "n": 0,
+      "correct": 0,
+      "validWrong": 0,
+      "stillInvalid": 0
+     }
+    },
+    "generic": {
+     "accuracy": {
+      "p": 0.9545454545454546,
+      "lo": 0.7820151050048196,
+      "hi": 0.9919307806988522,
+      "n": 22
+     },
+     "fixed": 0,
+     "broken": 0,
+     "stillInvalidV2": 0,
+     "vsAttempt1": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1,
+      "diffCI": {
+       "est": 0,
+       "lo": 0,
+       "hi": 0
+      }
+     },
+     "vsResample": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "vsGeneric": null,
+     "vsV1": null,
+     "meanAttempts": 1,
+     "repairedShare": 0,
+     "transitions": {
+      "n": 0,
+      "correct": 0,
+      "validWrong": 0,
+      "stillInvalid": 0
+     }
+    },
+    "v1fb": {
+     "accuracy": {
+      "p": 0.9545454545454546,
+      "lo": 0.7820151050048196,
+      "hi": 0.9919307806988522,
+      "n": 22
+     },
+     "fixed": 0,
+     "broken": 0,
+     "stillInvalidV2": 0,
+     "vsAttempt1": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1,
+      "diffCI": {
+       "est": 0,
+       "lo": 0,
+       "hi": 0
+      }
+     },
+     "vsResample": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "vsGeneric": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "vsV1": null,
+     "meanAttempts": 1,
+     "repairedShare": 0,
+     "transitions": {
+      "n": 0,
+      "correct": 0,
+      "validWrong": 0,
+      "stillInvalid": 0
+     }
+    },
+    "v2fb": {
+     "accuracy": {
+      "p": 0.9545454545454546,
+      "lo": 0.7820151050048196,
+      "hi": 0.9919307806988522,
+      "n": 22
+     },
+     "fixed": 0,
+     "broken": 0,
+     "stillInvalidV2": 0,
+     "vsAttempt1": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1,
+      "diffCI": {
+       "est": 0,
+       "lo": 0,
+       "hi": 0
+      }
+     },
+     "vsResample": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "vsGeneric": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "vsV1": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "meanAttempts": 1,
+     "repairedShare": 0,
+     "transitions": {
+      "n": 0,
+      "correct": 0,
+      "validWrong": 0,
+      "stillInvalid": 0
+     }
+    },
+    "v2fb+susp": {
+     "accuracy": {
+      "p": 0.9545454545454546,
+      "lo": 0.7820151050048196,
+      "hi": 0.9919307806988522,
+      "n": 22
+     },
+     "fixed": 0,
+     "broken": 0,
+     "stillInvalidV2": 0,
+     "vsAttempt1": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1,
+      "diffCI": {
+       "est": 0,
+       "lo": 0,
+       "hi": 0
+      }
+     },
+     "vsResample": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "vsGeneric": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "vsV1": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "meanAttempts": 1,
+     "repairedShare": 0,
+     "transitions": {
+      "n": 0,
+      "correct": 0,
+      "validWrong": 0,
+      "stillInvalid": 0
+     }
+    }
+   }
+  },
+  "lookupSheet2": {
+   "n": 22,
+   "copiedSheet2": 0
+  },
+  "cost": {
+   "attempt1:flat": {
+    "callsPerTask": 1,
+    "promptTokensPerTask": 615.2738589211618,
+    "completionTokensPerTask": 140.0331950207469,
+    "secondsPerTask": 5.147331950207471
+   },
+   "attempt1:retr": {
+    "callsPerTask": 1,
+    "promptTokensPerTask": 1048.5933609958506,
+    "completionTokensPerTask": 133.3609958506224,
+    "secondsPerTask": 3.3104771784232354
+   }
+  }
+ },
+ {
+  "model": "gemini-3.5-flash-lite",
+  "nPass2": 248,
+  "nPass1": 0,
+  "nValid": 248,
+  "context": {
+   "n": 248,
+   "arms": {
+    "flat": {
+     "overall": {
+      "p": 0.8991935483870968,
+      "lo": 0.8554243477910584,
+      "hi": 0.9307841261068204,
+      "n": 248
+     },
+     "lookup": {
+      "n": 22,
+      "acc": {
+       "p": 0.2727272727272727,
+       "lo": 0.1315058201581444,
+       "hi": 0.4815212369900198,
+       "n": 22
+      }
+     },
+     "other": {
+      "n": 226,
+      "acc": {
+       "p": 0.9601769911504425,
+       "lo": 0.9260609558836387,
+       "hi": 0.9789101198485178,
+       "n": 226
+      }
+     }
+    },
+    "final": {
+     "overall": {
+      "p": 0.9516129032258065,
+      "lo": 0.9173407584232144,
+      "hi": 0.9721072120471131,
+      "n": 248
+     },
+     "lookup": {
+      "n": 22,
+      "acc": {
+       "p": 0.9545454545454546,
+       "lo": 0.7820151050048196,
+       "hi": 0.9919307806988522,
+       "n": 22
+      }
+     },
+     "other": {
+      "n": 226,
+      "acc": {
+       "p": 0.9513274336283186,
+       "lo": 0.914959805033688,
+       "hi": 0.9726079807805423,
+       "n": 226
+      }
+     }
+    }
+   },
+   "tests": {
+    "final-vs-flat": {
+     "aOnly": 18,
+     "bOnly": 5,
+     "p": 0.010622024536132809
+    }
+   }
+  },
+  "taxonomy": {
+   "nWrong": 12,
+   "loud": 3,
+   "silent": 9,
+   "byErrorType": {
+    "VALUE": 1,
+    "NAME": 2
+   },
+   "v1": {
+    "reject": 0,
+    "flag": 2
+   },
+   "v2": {
+    "reject": 1,
+    "flag": 1,
+    "suspicious": 0
+   },
+   "loudCaught": {
+    "v1": 0,
+    "v2": 1
+   },
+   "silentCaught": {
+    "v1reject": 0,
+    "v2reject": 0,
+    "v2flag": 0,
+    "v1flag": 0
+   },
+   "v2Reasons": {
+    "Unknown function \"…\".": 1
+   }
+  },
+  "falseAlarms": {
+   "nCorrect": 236,
+   "v1Reject": 0,
+   "v2Reject": 0,
+   "v2Suspicious": 0
+  },
+  "gate": {
+   "accepted": 247,
+   "rejected": 1,
+   "accuracyAccepted": {
+    "p": 0.9554655870445344,
+    "lo": 0.9220266533771131,
+    "hi": 0.9749537517869427,
+    "n": 247
+   },
+   "accuracyRejected": {
+    "p": 0,
+    "lo": 0,
+    "hi": 0.7934567085261071,
+    "n": 1
+   },
+   "accuracyAll": {
+    "p": 0.9516129032258065,
+    "lo": 0.9173407584232144,
+    "hi": 0.9721072120471131,
+    "n": 248
+   }
+  },
+  "repair": {
+   "n": 248,
+   "attempt1": {
+    "p": 0.9516129032258065,
+    "lo": 0.9173407584232144,
+    "hi": 0.9721072120471131,
+    "n": 248
+   },
+   "strategies": {
+    "resample": {
+     "accuracy": {
+      "p": 0.9556451612903226,
+      "lo": 0.9223339965597022,
+      "hi": 0.9750554736469677,
+      "n": 248
+     },
+     "fixed": 1,
+     "broken": 0,
+     "stillInvalidV2": 0,
+     "vsAttempt1": {
+      "gained": 1,
+      "lost": 0,
+      "p": 1,
+      "diffCI": {
+       "est": 0.004032258064516129,
+       "lo": 0,
+       "hi": 0.012096774193548387
+      }
+     },
+     "vsResample": null,
+     "vsGeneric": null,
+     "vsV1": null,
+     "meanAttempts": 1.0040322580645162,
+     "repairedShare": 0.004032258064516129,
+     "transitions": {
+      "n": 1,
+      "correct": 1,
+      "validWrong": 0,
+      "stillInvalid": 0
+     }
+    },
+    "generic": {
+     "accuracy": {
+      "p": 0.9556451612903226,
+      "lo": 0.9223339965597022,
+      "hi": 0.9750554736469677,
+      "n": 248
+     },
+     "fixed": 1,
+     "broken": 0,
+     "stillInvalidV2": 0,
+     "vsAttempt1": {
+      "gained": 1,
+      "lost": 0,
+      "p": 1,
+      "diffCI": {
+       "est": 0.004032258064516129,
+       "lo": 0,
+       "hi": 0.012096774193548387
+      }
+     },
+     "vsResample": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "vsGeneric": null,
+     "vsV1": null,
+     "meanAttempts": 1.0040322580645162,
+     "repairedShare": 0.004032258064516129,
+     "transitions": {
+      "n": 1,
+      "correct": 1,
+      "validWrong": 0,
+      "stillInvalid": 0
+     }
+    },
+    "v1fb": {
+     "accuracy": {
+      "p": 0.9516129032258065,
+      "lo": 0.9173407584232144,
+      "hi": 0.9721072120471131,
+      "n": 248
+     },
+     "fixed": 0,
+     "broken": 0,
+     "stillInvalidV2": 1,
+     "vsAttempt1": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1,
+      "diffCI": {
+       "est": 0,
+       "lo": 0,
+       "hi": 0
+      }
+     },
+     "vsResample": {
+      "gained": 0,
+      "lost": 1,
+      "p": 1
+     },
+     "vsGeneric": {
+      "gained": 0,
+      "lost": 1,
+      "p": 1
+     },
+     "vsV1": null,
+     "meanAttempts": 1,
+     "repairedShare": 0,
+     "transitions": {
+      "n": 1,
+      "correct": 0,
+      "validWrong": 0,
+      "stillInvalid": 1
+     }
+    },
+    "v2fb": {
+     "accuracy": {
+      "p": 0.9556451612903226,
+      "lo": 0.9223339965597022,
+      "hi": 0.9750554736469677,
+      "n": 248
+     },
+     "fixed": 1,
+     "broken": 0,
+     "stillInvalidV2": 0,
+     "vsAttempt1": {
+      "gained": 1,
+      "lost": 0,
+      "p": 1,
+      "diffCI": {
+       "est": 0.004032258064516129,
+       "lo": 0,
+       "hi": 0.012096774193548387
+      }
+     },
+     "vsResample": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "vsGeneric": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "vsV1": {
+      "gained": 1,
+      "lost": 0,
+      "p": 1
+     },
+     "meanAttempts": 1.0040322580645162,
+     "repairedShare": 0.004032258064516129,
+     "transitions": {
+      "n": 1,
+      "correct": 1,
+      "validWrong": 0,
+      "stillInvalid": 0
+     }
+    },
+    "v2fb+susp": {
+     "accuracy": {
+      "p": 0.9556451612903226,
+      "lo": 0.9223339965597022,
+      "hi": 0.9750554736469677,
+      "n": 248
+     },
+     "fixed": 1,
+     "broken": 0,
+     "stillInvalidV2": 0,
+     "vsAttempt1": {
+      "gained": 1,
+      "lost": 0,
+      "p": 1,
+      "diffCI": {
+       "est": 0.004032258064516129,
+       "lo": 0,
+       "hi": 0.012096774193548387
+      }
+     },
+     "vsResample": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "vsGeneric": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "vsV1": {
+      "gained": 1,
+      "lost": 0,
+      "p": 1
+     },
+     "meanAttempts": 1.0040322580645162,
+     "repairedShare": 0.004032258064516129,
+     "transitions": {
+      "n": 1,
+      "correct": 1,
+      "validWrong": 0,
+      "stillInvalid": 0
+     }
+    }
+   }
+  },
+  "repairLookup": {
+   "n": 22,
+   "attempt1": {
+    "p": 0.9545454545454546,
+    "lo": 0.7820151050048196,
+    "hi": 0.9919307806988522,
+    "n": 22
+   },
+   "strategies": {
+    "resample": {
+     "accuracy": {
+      "p": 0.9545454545454546,
+      "lo": 0.7820151050048196,
+      "hi": 0.9919307806988522,
+      "n": 22
+     },
+     "fixed": 0,
+     "broken": 0,
+     "stillInvalidV2": 0,
+     "vsAttempt1": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1,
+      "diffCI": {
+       "est": 0,
+       "lo": 0,
+       "hi": 0
+      }
+     },
+     "vsResample": null,
+     "vsGeneric": null,
+     "vsV1": null,
+     "meanAttempts": 1,
+     "repairedShare": 0,
+     "transitions": {
+      "n": 0,
+      "correct": 0,
+      "validWrong": 0,
+      "stillInvalid": 0
+     }
+    },
+    "generic": {
+     "accuracy": {
+      "p": 0.9545454545454546,
+      "lo": 0.7820151050048196,
+      "hi": 0.9919307806988522,
+      "n": 22
+     },
+     "fixed": 0,
+     "broken": 0,
+     "stillInvalidV2": 0,
+     "vsAttempt1": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1,
+      "diffCI": {
+       "est": 0,
+       "lo": 0,
+       "hi": 0
+      }
+     },
+     "vsResample": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "vsGeneric": null,
+     "vsV1": null,
+     "meanAttempts": 1,
+     "repairedShare": 0,
+     "transitions": {
+      "n": 0,
+      "correct": 0,
+      "validWrong": 0,
+      "stillInvalid": 0
+     }
+    },
+    "v1fb": {
+     "accuracy": {
+      "p": 0.9545454545454546,
+      "lo": 0.7820151050048196,
+      "hi": 0.9919307806988522,
+      "n": 22
+     },
+     "fixed": 0,
+     "broken": 0,
+     "stillInvalidV2": 0,
+     "vsAttempt1": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1,
+      "diffCI": {
+       "est": 0,
+       "lo": 0,
+       "hi": 0
+      }
+     },
+     "vsResample": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "vsGeneric": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "vsV1": null,
+     "meanAttempts": 1,
+     "repairedShare": 0,
+     "transitions": {
+      "n": 0,
+      "correct": 0,
+      "validWrong": 0,
+      "stillInvalid": 0
+     }
+    },
+    "v2fb": {
+     "accuracy": {
+      "p": 0.9545454545454546,
+      "lo": 0.7820151050048196,
+      "hi": 0.9919307806988522,
+      "n": 22
+     },
+     "fixed": 0,
+     "broken": 0,
+     "stillInvalidV2": 0,
+     "vsAttempt1": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1,
+      "diffCI": {
+       "est": 0,
+       "lo": 0,
+       "hi": 0
+      }
+     },
+     "vsResample": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "vsGeneric": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "vsV1": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "meanAttempts": 1,
+     "repairedShare": 0,
+     "transitions": {
+      "n": 0,
+      "correct": 0,
+      "validWrong": 0,
+      "stillInvalid": 0
+     }
+    },
+    "v2fb+susp": {
+     "accuracy": {
+      "p": 0.9545454545454546,
+      "lo": 0.7820151050048196,
+      "hi": 0.9919307806988522,
+      "n": 22
+     },
+     "fixed": 0,
+     "broken": 0,
+     "stillInvalidV2": 0,
+     "vsAttempt1": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1,
+      "diffCI": {
+       "est": 0,
+       "lo": 0,
+       "hi": 0
+      }
+     },
+     "vsResample": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "vsGeneric": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "vsV1": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "meanAttempts": 1,
+     "repairedShare": 0,
+     "transitions": {
+      "n": 0,
+      "correct": 0,
+      "validWrong": 0,
+      "stillInvalid": 0
+     }
+    }
+   }
+  },
+  "lookupSheet2": {
+   "n": 22,
+   "copiedSheet2": 0
+  },
+  "cost": {
+   "attempt1:flat": {
+    "callsPerTask": 1,
+    "promptTokensPerTask": 615.516129032258,
+    "completionTokensPerTask": 19.911290322580644,
+    "secondsPerTask": 6.453096774193544
+   },
+   "attempt1:retr": {
+    "callsPerTask": 1,
+    "promptTokensPerTask": 1048.9233870967741,
+    "completionTokensPerTask": 22.399193548387096,
+    "secondsPerTask": 1.0573467741935487
+   },
+   "repair:resample": {
+    "callsPerTask": 0.004032258064516129,
+    "promptTokensPerTask": 4.133064516129032,
+    "completionTokensPerTask": 0.0846774193548387,
+    "secondsPerTask": 0.004229838709677419
+   },
+   "repair:generic": {
+    "callsPerTask": 0.004032258064516129,
+    "promptTokensPerTask": 4.266129032258065,
+    "completionTokensPerTask": 0.08870967741935484,
+    "secondsPerTask": 0.003927419354838709
+   },
+   "repair:v2fb": {
+    "callsPerTask": 0.004032258064516129,
+    "promptTokensPerTask": 4.495967741935484,
+    "completionTokensPerTask": 0.08870967741935484,
+    "secondsPerTask": 0.004032258064516129
+   },
+   "repair:v2fb+susp": {
+    "callsPerTask": 0.004032258064516129,
+    "promptTokensPerTask": 4.495967741935484,
+    "completionTokensPerTask": 0.08870967741935484,
+    "secondsPerTask": 0.005741935483870968
+   }
+  }
+ },
+ {
+  "model": "gemma-4-26b-a4b-it",
+  "nPass2": 360,
+  "nPass1": 0,
+  "nValid": 360,
+  "context": {
+   "n": 360,
+   "arms": {
+    "flat": {
+     "overall": {
+      "p": 0.9111111111111111,
+      "lo": 0.8772078585866762,
+      "hi": 0.9363329789646099,
+      "n": 360
+     },
+     "lookup": {
+      "n": 30,
+      "acc": {
+       "p": 0.36666666666666664,
+       "lo": 0.21873702204017678,
+       "hi": 0.5448675356639506,
+       "n": 30
+      }
+     },
+     "other": {
+      "n": 330,
+      "acc": {
+       "p": 0.9606060606060606,
+       "lo": 0.9337755048830493,
+       "hi": 0.9768359947023827,
+       "n": 330
+      }
+     }
+    },
+    "final": {
+     "overall": {
+      "p": 0.9583333333333334,
+      "lo": 0.9323984775590204,
+      "hi": 0.9745896183596432,
+      "n": 360
+     },
+     "lookup": {
+      "n": 30,
+      "acc": {
+       "p": 0.9666666666666667,
+       "lo": 0.8332924860304112,
+       "hi": 0.9940915620051425,
+       "n": 30
+      }
+     },
+     "other": {
+      "n": 330,
+      "acc": {
+       "p": 0.9575757575757575,
+       "lo": 0.9300572176472218,
+       "hi": 0.9745634168093585,
+       "n": 330
+      }
+     }
+    }
+   },
+   "tests": {
+    "final-vs-flat": {
+     "aOnly": 24,
+     "bOnly": 7,
+     "p": 0.0033268928527832005
+    }
+   }
+  },
+  "taxonomy": {
+   "nWrong": 15,
+   "loud": 4,
+   "silent": 11,
+   "byErrorType": {
+    "NAME": 3,
+    "VALUE": 1
+   },
+   "v1": {
+    "reject": 0,
+    "flag": 0
+   },
+   "v2": {
+    "reject": 0,
+    "flag": 0,
+    "suspicious": 0
+   },
+   "loudCaught": {
+    "v1": 0,
+    "v2": 0
+   },
+   "silentCaught": {
+    "v1reject": 0,
+    "v2reject": 0,
+    "v2flag": 0,
+    "v1flag": 0
+   },
+   "v2Reasons": {}
+  },
+  "falseAlarms": {
+   "nCorrect": 345,
+   "v1Reject": 0,
+   "v2Reject": 0,
+   "v2Suspicious": 0
+  },
+  "gate": {
+   "accepted": 360,
+   "rejected": 0,
+   "accuracyAccepted": {
+    "p": 0.9583333333333334,
+    "lo": 0.9323984775590204,
+    "hi": 0.9745896183596432,
+    "n": 360
+   },
+   "accuracyRejected": {
+    "p": null,
+    "lo": null,
+    "hi": null,
+    "n": 0
+   },
+   "accuracyAll": {
+    "p": 0.9583333333333334,
+    "lo": 0.9323984775590204,
+    "hi": 0.9745896183596432,
+    "n": 360
+   }
+  },
+  "repair": {
+   "n": 360,
+   "attempt1": {
+    "p": 0.9583333333333334,
+    "lo": 0.9323984775590204,
+    "hi": 0.9745896183596432,
+    "n": 360
+   },
+   "strategies": {
+    "resample": {
+     "accuracy": {
+      "p": 0.9583333333333334,
+      "lo": 0.9323984775590204,
+      "hi": 0.9745896183596432,
+      "n": 360
+     },
+     "fixed": 0,
+     "broken": 0,
+     "stillInvalidV2": 0,
+     "vsAttempt1": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1,
+      "diffCI": {
+       "est": 0,
+       "lo": 0,
+       "hi": 0
+      }
+     },
+     "vsResample": null,
+     "vsGeneric": null,
+     "vsV1": null,
+     "meanAttempts": 1,
+     "repairedShare": 0,
+     "transitions": {
+      "n": 0,
+      "correct": 0,
+      "validWrong": 0,
+      "stillInvalid": 0
+     }
+    },
+    "generic": {
+     "accuracy": {
+      "p": 0.9583333333333334,
+      "lo": 0.9323984775590204,
+      "hi": 0.9745896183596432,
+      "n": 360
+     },
+     "fixed": 0,
+     "broken": 0,
+     "stillInvalidV2": 0,
+     "vsAttempt1": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1,
+      "diffCI": {
+       "est": 0,
+       "lo": 0,
+       "hi": 0
+      }
+     },
+     "vsResample": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "vsGeneric": null,
+     "vsV1": null,
+     "meanAttempts": 1,
+     "repairedShare": 0,
+     "transitions": {
+      "n": 0,
+      "correct": 0,
+      "validWrong": 0,
+      "stillInvalid": 0
+     }
+    },
+    "v1fb": {
+     "accuracy": {
+      "p": 0.9583333333333334,
+      "lo": 0.9323984775590204,
+      "hi": 0.9745896183596432,
+      "n": 360
+     },
+     "fixed": 0,
+     "broken": 0,
+     "stillInvalidV2": 0,
+     "vsAttempt1": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1,
+      "diffCI": {
+       "est": 0,
+       "lo": 0,
+       "hi": 0
+      }
+     },
+     "vsResample": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "vsGeneric": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "vsV1": null,
+     "meanAttempts": 1,
+     "repairedShare": 0,
+     "transitions": {
+      "n": 0,
+      "correct": 0,
+      "validWrong": 0,
+      "stillInvalid": 0
+     }
+    },
+    "v2fb": {
+     "accuracy": {
+      "p": 0.9583333333333334,
+      "lo": 0.9323984775590204,
+      "hi": 0.9745896183596432,
+      "n": 360
+     },
+     "fixed": 0,
+     "broken": 0,
+     "stillInvalidV2": 0,
+     "vsAttempt1": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1,
+      "diffCI": {
+       "est": 0,
+       "lo": 0,
+       "hi": 0
+      }
+     },
+     "vsResample": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "vsGeneric": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "vsV1": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "meanAttempts": 1,
+     "repairedShare": 0,
+     "transitions": {
+      "n": 0,
+      "correct": 0,
+      "validWrong": 0,
+      "stillInvalid": 0
+     }
+    },
+    "v2fb+susp": {
+     "accuracy": {
+      "p": 0.9583333333333334,
+      "lo": 0.9323984775590204,
+      "hi": 0.9745896183596432,
+      "n": 360
+     },
+     "fixed": 0,
+     "broken": 0,
+     "stillInvalidV2": 0,
+     "vsAttempt1": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1,
+      "diffCI": {
+       "est": 0,
+       "lo": 0,
+       "hi": 0
+      }
+     },
+     "vsResample": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "vsGeneric": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "vsV1": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "meanAttempts": 1,
+     "repairedShare": 0,
+     "transitions": {
+      "n": 0,
+      "correct": 0,
+      "validWrong": 0,
+      "stillInvalid": 0
+     }
+    }
+   }
+  },
+  "repairLookup": {
+   "n": 30,
+   "attempt1": {
+    "p": 0.9666666666666667,
+    "lo": 0.8332924860304112,
+    "hi": 0.9940915620051425,
+    "n": 30
+   },
+   "strategies": {
+    "resample": {
+     "accuracy": {
+      "p": 0.9666666666666667,
+      "lo": 0.8332924860304112,
+      "hi": 0.9940915620051425,
+      "n": 30
+     },
+     "fixed": 0,
+     "broken": 0,
+     "stillInvalidV2": 0,
+     "vsAttempt1": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1,
+      "diffCI": {
+       "est": 0,
+       "lo": 0,
+       "hi": 0
+      }
+     },
+     "vsResample": null,
+     "vsGeneric": null,
+     "vsV1": null,
+     "meanAttempts": 1,
+     "repairedShare": 0,
+     "transitions": {
+      "n": 0,
+      "correct": 0,
+      "validWrong": 0,
+      "stillInvalid": 0
+     }
+    },
+    "generic": {
+     "accuracy": {
+      "p": 0.9666666666666667,
+      "lo": 0.8332924860304112,
+      "hi": 0.9940915620051425,
+      "n": 30
+     },
+     "fixed": 0,
+     "broken": 0,
+     "stillInvalidV2": 0,
+     "vsAttempt1": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1,
+      "diffCI": {
+       "est": 0,
+       "lo": 0,
+       "hi": 0
+      }
+     },
+     "vsResample": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "vsGeneric": null,
+     "vsV1": null,
+     "meanAttempts": 1,
+     "repairedShare": 0,
+     "transitions": {
+      "n": 0,
+      "correct": 0,
+      "validWrong": 0,
+      "stillInvalid": 0
+     }
+    },
+    "v1fb": {
+     "accuracy": {
+      "p": 0.9666666666666667,
+      "lo": 0.8332924860304112,
+      "hi": 0.9940915620051425,
+      "n": 30
+     },
+     "fixed": 0,
+     "broken": 0,
+     "stillInvalidV2": 0,
+     "vsAttempt1": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1,
+      "diffCI": {
+       "est": 0,
+       "lo": 0,
+       "hi": 0
+      }
+     },
+     "vsResample": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "vsGeneric": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "vsV1": null,
+     "meanAttempts": 1,
+     "repairedShare": 0,
+     "transitions": {
+      "n": 0,
+      "correct": 0,
+      "validWrong": 0,
+      "stillInvalid": 0
+     }
+    },
+    "v2fb": {
+     "accuracy": {
+      "p": 0.9666666666666667,
+      "lo": 0.8332924860304112,
+      "hi": 0.9940915620051425,
+      "n": 30
+     },
+     "fixed": 0,
+     "broken": 0,
+     "stillInvalidV2": 0,
+     "vsAttempt1": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1,
+      "diffCI": {
+       "est": 0,
+       "lo": 0,
+       "hi": 0
+      }
+     },
+     "vsResample": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "vsGeneric": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "vsV1": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "meanAttempts": 1,
+     "repairedShare": 0,
+     "transitions": {
+      "n": 0,
+      "correct": 0,
+      "validWrong": 0,
+      "stillInvalid": 0
+     }
+    },
+    "v2fb+susp": {
+     "accuracy": {
+      "p": 0.9666666666666667,
+      "lo": 0.8332924860304112,
+      "hi": 0.9940915620051425,
+      "n": 30
+     },
+     "fixed": 0,
+     "broken": 0,
+     "stillInvalidV2": 0,
+     "vsAttempt1": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1,
+      "diffCI": {
+       "est": 0,
+       "lo": 0,
+       "hi": 0
+      }
+     },
+     "vsResample": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "vsGeneric": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "vsV1": {
+      "gained": 0,
+      "lost": 0,
+      "p": 1
+     },
+     "meanAttempts": 1,
+     "repairedShare": 0,
+     "transitions": {
+      "n": 0,
+      "correct": 0,
+      "validWrong": 0,
+      "stillInvalid": 0
+     }
+    }
+   }
+  },
+  "lookupSheet2": {
+   "n": 30,
+   "copiedSheet2": 0
+  },
+  "cost": {
+   "attempt1:flat": {
+    "callsPerTask": 1,
+    "promptTokensPerTask": 616.725,
+    "completionTokensPerTask": 19.122222222222224,
+    "secondsPerTask": 5.558980555555554
+   },
+   "attempt1:retr": {
+    "callsPerTask": 1,
+    "promptTokensPerTask": 1049.6833333333334,
+    "completionTokensPerTask": 21.008333333333333,
+    "secondsPerTask": 6.2376055555555565
+   }
+  }
+ }
+]

@@ -1,0 +1,8 @@
+{
+  "name": "sheets-ai-pipeline",
+  "private": true,
+  "description": "Google Apps Script AI Copilot add-on. No build step — GAS runs the root .js/.html files directly via clasp. This package.json exists only to run the test suite under Node's built-in test runner.",
+  "scripts": {
+    "test": "node --test test/*.test.js"
+  }
+}

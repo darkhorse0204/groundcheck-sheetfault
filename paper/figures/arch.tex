@@ -1,0 +1,31 @@
+\begin{figure*}[t]
+\centering
+\resizebox{0.97\textwidth}{!}{%
+\begin{tikzpicture}[
+  box/.style={draw, rounded corners=1.5pt, minimum height=9mm, minimum width=24mm, align=center, font=\small, inner sep=3pt},
+  hl/.style={box, fill=blue!10, draw=blue!60!black},
+  arr/.style={-{Latex[length=2mm]}, thick},
+  lbl/.style={font=\footnotesize, fill=white, inner sep=1pt}
+]
+\node[box] (req) at (0,0) {Request};
+\node[box] (ctx) at (3.1,0) {Active-sheet\\context};
+\node[hl] (ret) at (6.4,0) {Budgeted\\retrieval};
+\node[box] (plan) at (9.7,0) {Planner\\(approval if writes)};
+\node[box] (agent) at (13.2,0) {Formula agent\\(LLM call)};
+\node[hl] (ver) at (13.2,-2.2) {\gc\\parse + six layers};
+\node[box] (tool) at (9.7,-2.2) {Tool registry\\(four gates)};
+\node[box] (wb) at (6.4,-2.2) {Workbook\\+ undo stack};
+\node[hl] (ssrf) at (9.7,-4.2) {URL validator\\+ redirect re-check};
+\draw[arr] (req) -- (ctx);
+\draw[arr] (ctx) -- (ret);
+\draw[arr] (ret) -- (plan);
+\draw[arr] (plan) -- (agent);
+\draw[arr] (agent) -- (ver) node[lbl, midway, right=1mm] {candidate formula};
+\draw[arr] (ver) -- (tool) node[lbl, midway, above] {valid};
+\draw[arr] (tool) -- (wb) node[lbl, midway, above] {write};
+\draw[arr] (ssrf) -- (tool) node[lbl, midway, right=1mm] {fetch only if allowed};
+\draw[arr, dashed] (ver.east) -- ++(1.5,0) |- (agent.east) node[lbl, pos=0.25, right] {errors, warnings, hints (repair)};
+\end{tikzpicture}}
+\caption{Request flow. Shaded boxes are evaluated in this paper: retrieved cross-sheet context, the grounded verifier with its repair feedback, and the URL validator in front of the fetch tool.}
+\label{fig:arch}
+\end{figure*}

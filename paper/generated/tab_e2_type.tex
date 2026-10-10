@@ -1,0 +1,18 @@
+\begin{table}
+\caption{Gold-complete rate (\%) by request type at 40 tables, budget 1500. A: aggregate; B: lookup; C: ``change \emph{this} formula\textquotedblright{}. H: names the column; S: paraphrase only.}
+\label{tab:e2-type}
+
+\centering\footnotesize
+\begin{adjustbox}{max width=\columnwidth}\begin{tabular}{l rrrrr}
+\toprule
+\textbf{Method} & A-H & A-S & B-H & B-S & C \\
+\midrule
+Ranker & 100 & 30 & 100 & 57 & 100 \\
+Lexical only & 100 & 30 & 100 & 57 & 28 \\
+Graph signals only & 28 & 28 & 50 & 50 & 100 \\
+Ranker $-$ graph & 100 & 30 & 100 & 57 & 10 \\
+BM25 & 100 & 33 & 100 & 57 & 28 \\
+Random & 28 & 45 & 47 & 48 & 37 \\
+\bottomrule
+\end{tabular}\end{adjustbox}
+\end{table}

@@ -1,0 +1,1808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Copilot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ─── CSS Reset & Base ─────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+
+/* ─── Design Tokens ────────────────────────────────────────────── */
+:root {
+  --bg:          #1e1e1e;
+  --bg-elevated: #252526;
+  --bg-input:    #2d2d30;
+  --bg-hover:    #2a2d2e;
+  --bg-active:   #37373d;
+  --border:      #3e3e42;
+  --border-soft: #2a2a2d;
+
+  --text-primary:   #cccccc;
+  --text-secondary: #9d9d9d;
+  --text-muted:     #6e6e6e;
+  --text-inverse:   #1e1e1e;
+
+  --accent:       #4fc1ff;
+  --accent-dim:   #1a3a52;
+  --accent-btn:   #0e639c;
+  --accent-hover: #1177bb;
+
+  --green:  #4ec9b0;
+  --green-dim: #1a3830;
+  --yellow: #dcdcaa;
+  --yellow-dim: #2d2a00;
+  --red:    #f44747;
+  --red-dim:   #3a1515;
+  --orange: #ce9178;
+  --purple: #c586c0;
+
+  --font-ui:   'Inter', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Consolas', monospace;
+
+  --r-sm: 4px;
+  --r-md: 6px;
+  --r-lg: 10px;
+
+  --t: 150ms ease;
+}
+
+/* ─── Root Layout ──────────────────────────────────────────────── */
+body {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  color: var(--text-primary);
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  user-select: none;
+}
+
+/* ─── Header ───────────────────────────────────────────────────── */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  height: 38px;
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--text-primary);
+}
+.header-logo .logo-icon { font-size: 14px; }
+.header-spacer { flex: 1; }
+.context-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 7px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  font-size: 10px;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  max-width: 120px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.status-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  flex-shrink: 0;
+}
+.status-dot.busy { background: var(--yellow); animation: pulse-dot 1s infinite; }
+.status-dot.error { background: var(--red); }
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.8); }
+}
+
+/* ─── Tab Bar ──────────────────────────────────────────────────── */
+.tabs {
+  display: flex;
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 6px 4px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all var(--t);
+  color: var(--text-muted);
+  font-size: 9px;
+  font-weight: 500;
+}
+.tab:hover { background: var(--bg-hover); color: var(--text-secondary); }
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.tab-icon { font-size: 13px; line-height: 1; }
+
+/* ─── Panels ───────────────────────────────────────────────────── */
+.panel { display: none; flex: 1; overflow-y: auto; flex-direction: column; }
+.panel.active { display: flex; }
+
+/* Scrollbar styling */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* ─── Chat Panel ───────────────────────────────────────────────── */
+#panel-chat { padding-bottom: 0; }
+
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Empty state */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 40px 16px;
+  color: var(--text-muted);
+  text-align: center;
+}
+.empty-icon { font-size: 28px; margin-bottom: 4px; }
+.empty-title { font-size: 13px; font-weight: 600; color: var(--text-secondary); }
+.empty-sub { font-size: 11px; line-height: 1.5; max-width: 200px; }
+
+/* Chips for quick actions */
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  margin-top: 12px;
+}
+.chip {
+  padding: 4px 10px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  font-size: 10px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--t);
+}
+.chip:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Message bubbles */
+.message { display: flex; flex-direction: column; max-width: 100%; animation: msg-in 0.15s ease; }
+@keyframes msg-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.message.user { align-items: flex-end; }
+.message.assistant { align-items: flex-start; }
+.message.system { align-items: center; }
+
+.bubble {
+  padding: 8px 11px;
+  border-radius: var(--r-md);
+  font-size: 12px;
+  line-height: 1.55;
+  max-width: 92%;
+  word-break: break-word;
+}
+.message.user .bubble {
+  background: var(--accent-dim);
+  border: 1px solid rgba(79,193,255,0.2);
+  color: var(--accent);
+  border-bottom-right-radius: 2px;
+}
+.message.assistant .bubble {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  border-bottom-left-radius: 2px;
+}
+.message.system .bubble {
+  background: transparent;
+  border: 1px dashed var(--border);
+  color: var(--text-muted);
+  font-size: 10px;
+  border-radius: 20px;
+  padding: 3px 10px;
+}
+
+/* Formula chips inline in messages */
+.formula-chip {
+  display: inline-block;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--green);
+  padding: 1px 6px;
+  margin: 2px 0;
+  cursor: pointer;
+  user-select: text;
+}
+.formula-chip:hover { border-color: var(--green); }
+
+/* Tool call cards */
+.tool-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  padding: 6px 8px;
+  background: var(--bg);
+  border: 1px solid var(--border-soft);
+  border-left: 2px solid var(--purple);
+  border-radius: var(--r-sm);
+  font-size: 10px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+.tool-card .tool-name { color: var(--purple); font-family: var(--font-mono); font-weight: 500; }
+.tool-card .tool-status { margin-left: auto; }
+.tool-card.ok .tool-status { color: var(--green); }
+.tool-card.err .tool-status { color: var(--red); }
+
+/* Thinking indicator */
+.thinking {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  color: var(--text-secondary);
+  font-size: 11px;
+  max-width: 160px;
+}
+.thinking-dots { display: flex; gap: 3px; }
+.thinking-dots span {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: bounce-dot 1.2s infinite;
+}
+.thinking-dots span:nth-child(2) { animation-delay: 0.2s; }
+.thinking-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes bounce-dot {
+  0%, 80%, 100% { transform: scale(0.7); opacity: 0.5; }
+  40% { transform: scale(1); opacity: 1; }
+}
+
+/* Message timestamp */
+.msg-meta { font-size: 9px; color: var(--text-muted); margin-top: 2px; padding: 0 2px; }
+
+/* Warning / error strip in bubbles */
+.bubble-warning { color: var(--yellow); font-size: 10px; margin-top: 4px; display: flex; gap: 4px; align-items: flex-start; }
+.bubble-error   { color: var(--red);    font-size: 10px; margin-top: 4px; display: flex; gap: 4px; align-items: flex-start; }
+
+/* ─── Input Area ───────────────────────────────────────────────── */
+.input-area {
+  flex-shrink: 0;
+  padding: 8px 10px;
+  background: var(--bg-elevated);
+  border-top: 1px solid var(--border);
+}
+.input-box {
+  display: flex;
+  gap: 6px;
+  align-items: flex-end;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 7px 8px;
+  transition: border-color var(--t);
+}
+.input-box:focus-within { border-color: var(--accent); }
+.input-box textarea {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: none;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  color: var(--text-primary);
+  max-height: 100px;
+  min-height: 18px;
+  line-height: 1.5;
+  overflow-y: auto;
+}
+.input-box textarea::placeholder { color: var(--text-muted); }
+.send-btn {
+  width: 26px; height: 26px;
+  border-radius: var(--r-sm);
+  background: var(--accent-btn);
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+  flex-shrink: 0;
+  transition: background var(--t);
+}
+.send-btn:hover { background: var(--accent-hover); }
+.send-btn:disabled { background: var(--bg-active); cursor: not-allowed; }
+
+/* Mode + controls bar */
+.controls-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+}
+.mode-select {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-size: 10px;
+  font-family: var(--font-ui);
+  border-radius: var(--r-sm);
+  padding: 3px 6px;
+  cursor: pointer;
+  outline: none;
+}
+.cost-badge {
+  display: flex; align-items: center; gap: 3px;
+  font-size: 10px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  padding: 2px 6px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-soft);
+  border-radius: 20px;
+}
+.spacer { flex: 1; }
+.plan-toggle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 3px 7px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: transparent;
+  transition: all var(--t);
+}
+.plan-toggle:hover { border-color: var(--accent); color: var(--accent); }
+.plan-toggle.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+
+/* ─── Plan Panel ───────────────────────────────────────────────── */
+#panel-plan { padding: 10px; gap: 10px; }
+
+.plan-header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+}
+.plan-title { font-size: 12px; font-weight: 600; color: var(--text-primary); }
+.plan-prompt { font-size: 10px; color: var(--text-secondary); line-height: 1.5; margin-top: 2px; }
+.plan-meta {
+  display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px;
+}
+.plan-badge {
+  font-size: 9px;
+  padding: 2px 7px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+.plan-badge.cost   { background: var(--yellow-dim); color: var(--yellow); border: 1px solid rgba(220,220,170,0.2); }
+.plan-badge.steps  { background: var(--accent-dim);  color: var(--accent);  border: 1px solid rgba(79,193,255,0.2); }
+.plan-badge.status { background: var(--bg-input); color: var(--text-muted); border: 1px solid var(--border); }
+
+.plan-reasoning {
+  font-size: 10px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  padding: 8px;
+  background: var(--bg);
+  border-radius: var(--r-sm);
+  border-left: 2px solid var(--border);
+  margin-top: 2px;
+}
+
+/* Plan step tree */
+.steps-tree {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  position: relative;
+}
+.steps-tree::before {
+  content: '';
+  position: absolute;
+  left: 16px;
+  top: 20px;
+  bottom: 20px;
+  width: 1px;
+  background: var(--border);
+}
+
+.step-card {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  position: relative;
+}
+.step-num {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--bg-elevated);
+  flex-shrink: 0;
+  z-index: 1;
+  transition: all var(--t);
+}
+.step-card.completed .step-num { border-color: var(--green); color: var(--green); background: var(--green-dim); }
+.step-card.running  .step-num  { border-color: var(--accent); color: var(--accent); animation: spin-border 1s linear infinite; }
+.step-card.failed   .step-num  { border-color: var(--red); color: var(--red); background: var(--red-dim); }
+.step-card.pending  .step-num  { border-color: var(--border); }
+
+@keyframes spin-border {
+  from { box-shadow: 0 0 0 2px var(--accent-dim); }
+  to   { box-shadow: 0 0 0 4px transparent; }
+}
+
+.step-body {
+  flex: 1;
+  padding: 8px 10px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  min-width: 0;
+  transition: border-color var(--t);
+}
+.step-card.running .step-body  { border-color: var(--accent); }
+.step-card.completed .step-body{ border-color: var(--green); }
+.step-card.failed .step-body   { border-color: var(--red); }
+
+.step-tool {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--purple);
+  font-weight: 500;
+}
+.step-reason { font-size: 10px; color: var(--text-secondary); margin-top: 2px; line-height: 1.4; }
+.step-output { font-size: 9px; color: var(--text-muted); margin-top: 3px; font-style: italic; }
+.step-meta {
+  display: flex; gap: 6px; align-items: center; margin-top: 4px;
+}
+.step-cost { font-size: 9px; color: var(--text-muted); font-family: var(--font-mono); }
+.step-dep  { font-size: 9px; padding: 1px 5px; background: var(--bg); border: 1px solid var(--border); border-radius: 3px; color: var(--text-muted); }
+
+.plan-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+/* Buttons */
+.btn {
+  flex: 1;
+  padding: 7px 12px;
+  border-radius: var(--r-sm);
+  border: none;
+  font-size: 11px;
+  font-weight: 500;
+  font-family: var(--font-ui);
+  cursor: pointer;
+  transition: all var(--t);
+}
+.btn-primary  { background: var(--accent-btn); color: white; }
+.btn-primary:hover  { background: var(--accent-hover); }
+.btn-danger   { background: transparent; border: 1px solid var(--red); color: var(--red); }
+.btn-danger:hover   { background: var(--red-dim); }
+.btn-ghost    { background: var(--bg-input); border: 1px solid var(--border); color: var(--text-secondary); }
+.btn-ghost:hover    { border-color: var(--accent); color: var(--accent); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* Plan empty state */
+.plan-empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 40px 20px;
+}
+
+/* ─── History Panel ────────────────────────────────────────────── */
+#panel-history { padding: 10px; gap: 8px; }
+
+.section-title {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 0 2px;
+}
+
+.history-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 10px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r-md);
+  cursor: pointer;
+  transition: all var(--t);
+}
+.history-item:hover { border-color: var(--accent); }
+.history-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+.history-body { flex: 1; min-width: 0; }
+.history-prompt {
+  font-size: 11px;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.history-meta { display: flex; gap: 8px; margin-top: 2px; }
+.history-date { font-size: 9px; color: var(--text-muted); }
+.history-cost { font-size: 9px; color: var(--text-muted); font-family: var(--font-mono); }
+.history-status {
+  font-size: 9px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-weight: 500;
+}
+.history-status.completed { background: var(--green-dim); color: var(--green); }
+.history-status.failed    { background: var(--red-dim);   color: var(--red); }
+.history-actions { display: flex; gap: 4px; align-items: center; flex-shrink: 0; }
+.icon-btn {
+  width: 22px; height: 22px;
+  border-radius: var(--r-sm);
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px;
+  transition: all var(--t);
+}
+.icon-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Undo stack */
+.undo-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r-sm);
+}
+.undo-label { flex: 1; font-size: 10px; color: var(--text-secondary); }
+.undo-time  { font-size: 9px; color: var(--text-muted); }
+.undo-btn { font-size: 10px; }
+
+/* ─── Settings Panel ───────────────────────────────────────────── */
+#panel-settings { padding: 10px; gap: 12px; }
+
+.settings-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r-md);
+}
+.settings-label { font-size: 11px; color: var(--text-primary); }
+.settings-sub   { font-size: 9px; color: var(--text-muted); margin-top: 1px; }
+
+/* Toggle switch */
+.toggle {
+  position: relative;
+  width: 32px; height: 18px;
+  flex-shrink: 0;
+}
+.toggle input { opacity: 0; width: 0; height: 0; }
+.toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: var(--bg-active);
+  border-radius: 18px;
+  cursor: pointer;
+  transition: background var(--t);
+}
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  width: 12px; height: 12px;
+  left: 3px; top: 3px;
+  background: var(--text-muted);
+  border-radius: 50%;
+  transition: all var(--t);
+}
+.toggle input:checked + .toggle-slider { background: var(--accent-btn); }
+.toggle input:checked + .toggle-slider::before {
+  transform: translateX(14px);
+  background: white;
+}
+
+/* Verbosity select */
+.verbosity-options { display: flex; gap: 4px; }
+.verbosity-opt {
+  padding: 3px 8px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 10px;
+  cursor: pointer;
+  transition: all var(--t);
+}
+.verbosity-opt.active { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+
+/* Stats cards */
+.stat-row { display: flex; gap: 6px; }
+.stat-card {
+  flex: 1;
+  padding: 8px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r-md);
+  text-align: center;
+}
+.stat-value { font-size: 16px; font-weight: 600; color: var(--text-primary); font-family: var(--font-mono); }
+.stat-label { font-size: 9px; color: var(--text-muted); margin-top: 1px; }
+
+/* Danger zone */
+.danger-section {
+  display: flex;
+  gap: 6px;
+}
+
+/* ─── Dry Run Banner ───────────────────────────────────────────── */
+.dry-run-banner {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  background: var(--yellow-dim);
+  border-bottom: 1px solid rgba(220,220,170,0.2);
+  font-size: 10px;
+  color: var(--yellow);
+  flex-shrink: 0;
+}
+.dry-run-banner.visible { display: flex; }
+
+/* ─── Notification toast ───────────────────────────────────────── */
+.toast {
+  position: fixed;
+  bottom: 80px;
+  left: 10px; right: 10px;
+  padding: 8px 12px;
+  border-radius: var(--r-md);
+  font-size: 11px;
+  font-weight: 500;
+  text-align: center;
+  z-index: 1000;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: all 0.2s ease;
+  pointer-events: none;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+.toast.success { background: var(--green-dim); color: var(--green); border: 1px solid rgba(78,201,176,0.3); }
+.toast.error   { background: var(--red-dim);   color: var(--red);   border: 1px solid rgba(244,71,71,0.3); }
+.toast.info    { background: var(--accent-dim); color: var(--accent); border: 1px solid rgba(79,193,255,0.3); }
+
+/* ─── Divider ──────────────────────────────────────────────────── */
+.divider { height: 1px; background: var(--border-soft); margin: 2px 0; }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-logo">
+    <span class="logo-icon">✦</span>
+    <span>AI Copilot</span>
+  </div>
+  <div class="header-spacer"></div>
+  <div class="context-badge" id="contextBadge">
+    <span id="contextCell">Loading…</span>
+  </div>
+  <div class="status-dot" id="statusDot"></div>
+</div>
+
+<!-- Dry Run Banner -->
+<div class="dry-run-banner" id="dryRunBanner">
+  ⚡ DRY RUN — writes disabled
+</div>
+
+<!-- Tab Bar -->
+<div class="tabs">
+  <div class="tab active" data-tab="chat" onclick="switchTab('chat')">
+    <span class="tab-icon">💬</span>Chat
+  </div>
+  <div class="tab" data-tab="plan" onclick="switchTab('plan')">
+    <span class="tab-icon">📋</span>Plan
+  </div>
+  <div class="tab" data-tab="context" onclick="switchTab('context')">
+    <span class="tab-icon">🧭</span>Context
+  </div>
+  <div class="tab" data-tab="observability" onclick="switchTab('observability')">
+    <span class="tab-icon">⚡</span>Activity
+  </div>
+  <div class="tab" data-tab="history" onclick="switchTab('history')">
+    <span class="tab-icon">🕐</span>History
+  </div>
+  <div class="tab" data-tab="settings" onclick="switchTab('settings')">
+    <span class="tab-icon">⚙️</span>Settings
+  </div>
+</div>
+
+<!-- ─── CHAT PANEL ─────────────────────────────────────────────── -->
+<div class="panel active" id="panel-chat">
+  <div class="messages" id="messages">
+    <div class="empty-state" id="emptyState">
+      <div class="empty-icon">✦</div>
+      <div class="empty-title">AI Copilot ready</div>
+      <div class="empty-sub">Ask anything about your spreadsheet. I'll understand your data and help you work faster.</div>
+      <div class="chip-row">
+        <div class="chip" onclick="fillPrompt('Sum revenue by region')">Sum by region</div>
+        <div class="chip" onclick="fillPrompt('Fix this formula')">Fix formula</div>
+        <div class="chip" onclick="fillPrompt('Create a line chart')">Create chart</div>
+        <div class="chip" onclick="fillPrompt('Explain this formula')">Explain</div>
+        <div class="chip" onclick="fillPrompt('Import data from API')">Fetch data</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="input-area">
+    <div class="input-box">
+      <textarea
+        id="promptInput"
+        placeholder="Ask anything…"
+        rows="1"
+        onkeydown="handleKeydown(event)"
+        oninput="autoResize(this)"
+      ></textarea>
+      <button class="send-btn" id="sendBtn" onclick="sendMessage()" title="Send (Enter)">↑</button>
+    </div>
+    <div class="controls-bar">
+      <select class="mode-select" id="modeSelect">
+        <option value="auto">Auto</option>
+        <option value="generate_formula">Formula</option>
+        <option value="debug_formula">Debug</option>
+        <option value="explain_formula">Explain</option>
+        <option value="fetch_data">Fetch</option>
+        <option value="push_data">Push</option>
+      </select>
+      <div class="cost-badge" id="costBadge" title="Session cost">💰 $0.0000</div>
+      <div class="spacer"></div>
+      <button class="plan-toggle" id="planToggle" onclick="togglePlanning()" title="Plan before executing">
+        📋 Plan first
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── PLAN PANEL ─────────────────────────────────────────────── -->
+<div class="panel" id="panel-plan">
+  <div class="plan-empty" id="planEmpty">
+    <div style="font-size:24px">📋</div>
+    <div style="font-size:12px;font-weight:600;color:var(--text-secondary)">No active plan</div>
+    <div style="font-size:10px;color:var(--text-muted);max-width:180px;text-align:center;line-height:1.6">
+      Enable <strong style="color:var(--accent)">Plan first</strong> mode and send a request
+      to see the execution plan before it runs.
+    </div>
+  </div>
+  <div id="planContent" style="display:none;flex-direction:column;gap:10px;padding:10px;">
+    <div class="plan-header" id="planHeader"></div>
+    <div class="steps-tree" id="stepsTree"></div>
+    <div class="plan-actions" id="planActions"></div>
+  </div>
+</div>
+
+<!-- ─── CONTEXT PANEL ──────────────────────────────────────────── -->
+<!-- "Current Context": what the copilot actually sees right now — the
+     active sheet/cell (cheap, always-on snapshot from Context.js) plus
+     ContextRetriever.js's token-budgeted, relevance-ranked chunk selection
+     spanning the whole workbook (other sheets' tables, formula-graph
+     neighbors, named ranges — not just the active sheet). -->
+<div class="panel" id="panel-context">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin:10px 10px 8px">
+    <div class="section-title" style="margin:0">Active Location</div>
+    <button class="btn btn-ghost" style="font-size:10px;padding:4px 8px;flex:none" onclick="loadCurrentContext()">↻ Refresh</button>
+  </div>
+  <div id="ctxLocation" style="font-size:10px;color:var(--text-muted);padding:0 10px 8px"></div>
+
+  <div class="section-title" style="margin:4px 10px">Headers</div>
+  <div id="ctxHeaders" class="chip-row" style="justify-content:flex-start;padding:0 10px 8px"></div>
+
+  <div class="section-title" style="margin:4px 10px">Named Ranges</div>
+  <div id="ctxNamedRanges" style="font-size:10px;padding:0 10px 8px;color:var(--text-muted)"></div>
+
+  <div class="divider" style="margin:0 10px"></div>
+
+  <div style="display:flex;justify-content:space-between;align-items:center;margin:8px 10px 4px">
+    <div class="section-title" style="margin:0">Ranked Context Selection</div>
+    <span id="ctxBudget" style="font-size:9px;color:var(--text-muted);font-family:var(--font-mono)"></span>
+  </div>
+  <div id="ctxRanked" style="font-size:10px;padding:0 10px 12px"></div>
+</div>
+
+<!-- ─── HISTORY PANEL ──────────────────────────────────────────── -->
+<div class="panel" id="panel-history">
+  <div class="section-title" style="margin:0 2px">Undo Stack</div>
+  <div id="undoList">
+    <div style="font-size:10px;color:var(--text-muted);padding:8px 2px">No undo history</div>
+  </div>
+  <div class="divider"></div>
+  <div class="section-title" style="margin:4px 2px">Redo Stack</div>
+  <div id="redoList">
+    <div style="font-size:10px;color:var(--text-muted);padding:8px 2px">No redo history</div>
+  </div>
+  <div class="divider"></div>
+  <div class="section-title" style="margin:4px 2px">Recent Operations</div>
+  <div id="historyList">
+    <div style="font-size:10px;color:var(--text-muted);padding:8px 2px">No history yet</div>
+  </div>
+</div>
+
+<!-- ─── OBSERVABILITY PANEL ────────────────────────────────────── -->
+<div class="panel" id="panel-observability">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin:0 2px 8px">
+    <div class="section-title" style="margin:0">Last Request Trace</div>
+    <button class="btn btn-ghost" style="font-size:10px;padding:4px 8px" onclick="loadObservability()">↻ Refresh</button>
+  </div>
+
+  <div id="obsSummary" style="font-size:10px;color:var(--text-muted);padding:4px 2px 8px">No trace yet — send a request first.</div>
+
+  <div class="section-title" style="margin:4px 2px">Execution Timeline</div>
+  <div id="obsTimeline" style="font-size:10px;color:var(--text-muted);padding:4px 2px 8px"></div>
+
+  <div class="divider"></div>
+  <div class="section-title" style="margin:4px 2px">Agent Trace (Latency)</div>
+  <div id="obsAgentTrace" style="font-size:10px;padding:4px 2px 8px"></div>
+
+  <div class="divider"></div>
+  <div class="section-title" style="margin:4px 2px">Tool Calls</div>
+  <div id="obsToolCalls" style="font-size:10px;padding:4px 2px 8px"></div>
+
+  <div class="divider"></div>
+  <div class="section-title" style="margin:4px 2px">Verification Results</div>
+  <div id="obsVerifications" style="font-size:10px;padding:4px 2px 8px"></div>
+
+  <div class="divider"></div>
+  <div class="section-title" style="margin:4px 2px">Prompt Viewer</div>
+  <div id="obsPrompts" style="font-size:10px;padding:4px 2px 8px"></div>
+
+  <div class="divider"></div>
+  <div class="section-title" style="margin:4px 2px">Context Viewer</div>
+  <div id="obsContexts" style="font-size:10px;padding:4px 2px 8px"></div>
+
+  <div class="divider"></div>
+  <div class="section-title" style="margin:4px 2px">Request History (Latency / Cost / Retries)</div>
+  <div id="obsHistory" style="font-size:10px;padding:4px 2px 8px"></div>
+</div>
+
+<!-- ─── SETTINGS PANEL ─────────────────────────────────────────── -->
+<div class="panel" id="panel-settings">
+  <!-- Stats -->
+  <div class="section-title">Usage</div>
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="stat-value" id="statCost">$0.00</div>
+      <div class="stat-label">Total cost</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="statTokens">0</div>
+      <div class="stat-label">Tokens used</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="statRequests">0</div>
+      <div class="stat-label">Requests</div>
+    </div>
+  </div>
+
+  <!-- Preferences -->
+  <div class="section-title">Preferences</div>
+  <div class="settings-section">
+    <div class="settings-row">
+      <div>
+        <div class="settings-label">Dry Run Mode</div>
+        <div class="settings-sub">Compute without writing to the sheet</div>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="dryRunToggle" onchange="toggleDryRun(this.checked)">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    <div class="settings-row">
+      <div>
+        <div class="settings-label">Plan before executing</div>
+        <div class="settings-sub">Show plan and ask for approval</div>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="planModeToggle" onchange="togglePlanMode(this.checked)">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:8px">
+      <div class="settings-label">Response style</div>
+      <div class="verbosity-options">
+        <div class="verbosity-opt" data-v="terse" onclick="setVerbosity('terse')">Terse</div>
+        <div class="verbosity-opt active" data-v="balanced" onclick="setVerbosity('balanced')">Balanced</div>
+        <div class="verbosity-opt" data-v="detailed" onclick="setVerbosity('detailed')">Detailed</div>
+        <div class="verbosity-opt" data-v="technical" onclick="setVerbosity('technical')">Technical</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Formula style -->
+  <div class="section-title">Formula Style</div>
+  <div class="settings-section">
+    <div class="settings-row">
+      <div>
+        <div class="settings-label">Prefer XLOOKUP</div>
+        <div class="settings-sub">Over VLOOKUP/HLOOKUP</div>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="xlookupToggle" onchange="savePref('preferXLOOKUP', this.checked)">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    <div class="settings-row">
+      <div>
+        <div class="settings-label">Array formulas</div>
+        <div class="settings-sub">Prefer ARRAYFORMULA patterns</div>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="arrayToggle" onchange="savePref('preferArrayFormulas', this.checked)">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+  </div>
+
+  <!-- Danger zone -->
+  <div class="section-title">Memory</div>
+  <div class="danger-section">
+    <button class="btn btn-ghost" style="flex:1" onclick="clearMemory()">Clear memory</button>
+    <button class="btn btn-danger" style="flex:1" onclick="clearAll()">Reset all</button>
+  </div>
+
+  <div style="font-size:9px;color:var(--text-muted);margin-top:4px;text-align:center">
+    AI Copilot v2.0 · Built on Gemini
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── State ──────────────────────────────────────────────────────────────────
+var STATE = {
+  isLoading:      false,
+  planMode:       false,
+  activePlan:     null,
+  currentPlanId:  null,
+  executingStep:  0,
+  planActivityTrace: null   // accumulates per-step traces during multi-step Plan Mode execution
+};
+
+// ─── Init ───────────────────────────────────────────────────────────────────
+(function init() {
+  updateContextBadge();
+  loadCostSummary();
+  loadHistory();
+  loadUndoStack();
+  // Refresh context badge every 3 seconds (cursor position changes)
+  setInterval(updateContextBadge, 3000);
+  setInterval(loadCostSummary, 10000);
+})();
+
+// ─── Tab Switching ───────────────────────────────────────────────────────────
+function switchTab(tabId) {
+  document.querySelectorAll('.tab').forEach(function(t) {
+    t.classList.toggle('active', t.dataset.tab === tabId);
+  });
+  document.querySelectorAll('.panel').forEach(function(p) {
+    p.classList.toggle('active', p.id === 'panel-' + tabId);
+  });
+  if (tabId === 'history') { loadHistory(); loadUndoStack(); }
+  if (tabId === 'settings') { loadSettings(); }
+  if (tabId === 'observability') { loadObservability(); }
+  if (tabId === 'context') { loadCurrentContext(); }
+}
+
+// ─── Context Badge ───────────────────────────────────────────────────────────
+function updateContextBadge() {
+  google.script.run
+    .withSuccessHandler(function(cell) {
+      document.getElementById('contextCell').textContent = cell || '—';
+    })
+    .withFailureHandler(function() {})
+    .getActiveCellRef();
+}
+
+// ─── Send Message ────────────────────────────────────────────────────────────
+function sendMessage() {
+  var input = document.getElementById('promptInput');
+  var prompt = input.value.trim();
+  if (!prompt || STATE.isLoading) return;
+
+  var mode = document.getElementById('modeSelect').value;
+
+  hideEmpty();
+  appendMessage('user', prompt);
+  input.value = '';
+  autoResize(input);
+  setLoading(true);
+
+  if (STATE.planMode) {
+    // Planning mode: generate plan first, then wait for approval
+    var thinkId = appendThinking('Planning execution…');
+    google.script.run
+      .withSuccessHandler(function(plan) {
+        removeThinking(thinkId);
+        setLoading(false);
+        displayPlan(plan);
+        switchTab('plan');
+        toast('Plan ready — review and approve', 'info');
+      })
+      .withFailureHandler(function(err) {
+        removeThinking(thinkId);
+        setLoading(false);
+        appendMessage('assistant', '❌ ' + err.message, { isError: true });
+        toast(err.message, 'error');
+      })
+      .generatePlanForPrompt(prompt);
+  } else {
+    // Direct mode: run immediately. Note: every request is planned
+    // server-side now (no direct execution without planning) — a
+    // destructive/costly intent can still come back needing approval even
+    // outside the explicit Plan Mode toggle, so that has to be handled here too.
+    var thinkId2 = appendThinking();
+    google.script.run
+      .withSuccessHandler(function(result) {
+        removeThinking(thinkId2);
+        setLoading(false);
+        if (result && result.pendingApproval && result.plan) {
+          appendMessage('assistant', result.text || 'This action needs your approval before it runs.');
+          displayPlan(result.plan);
+          switchTab('plan');
+          toast('Plan ready — review and approve', 'info');
+          return;
+        }
+        handleResponse(result);
+        loadCostSummary();
+      })
+      .withFailureHandler(function(err) {
+        removeThinking(thinkId2);
+        setLoading(false);
+        appendMessage('assistant', '❌ ' + err.message, { isError: true });
+        setStatus('error');
+        setTimeout(function() { setStatus('idle'); }, 3000);
+        toast(err.message, 'error');
+      })
+      .handleRequest(prompt, mode);
+  }
+}
+
+// ─── Response Handler ────────────────────────────────────────────────────────
+function handleResponse(result) {
+  if (!result) return;
+
+  var content = '';
+  var extras = [];
+
+  if (result.formula) {
+    content = result.explanation || 'Here is the formula:';
+    extras.push({ type: 'formula', value: result.formula });
+  } else if (result.message) {
+    content = result.message;
+  } else if (typeof result === 'string') {
+    content = result;
+  } else {
+    content = JSON.stringify(result, null, 2);
+  }
+
+  if (result.warnings && result.warnings.length > 0) {
+    extras.push({ type: 'warning', value: result.warnings.join('; ') });
+  }
+
+  // Cost/latency readout per response (Observability's per-request trace,
+  // attached by handleRequest()) — the "Cost" feature surfaced inline where
+  // it's most useful, rather than only as a running session total.
+  var metaBits = [];
+  if (result.trace) {
+    if (result.trace.totalCostUsd > 0) metaBits.push('$' + result.trace.totalCostUsd.toFixed(4));
+    if (typeof result.trace.durationMs === 'number') metaBits.push(result.trace.durationMs + 'ms');
+    if (result.trace.retryCount > 0) metaBits.push(result.trace.retryCount + ' retr' + (result.trace.retryCount === 1 ? 'y' : 'ies'));
+  }
+
+  appendMessage('assistant', content, { extras: extras, meta: metaBits.join(' · ') });
+
+  if (result.formula) {
+    appendToolCard('insert_formula', { cell: result.targetCell || 'active' }, 'ok');
+    toast('Formula inserted ✓', 'success');
+    loadUndoStack();
+  }
+
+  // Refresh the Activity tab's data immediately (no extra round-trip) so
+  // Live Agent Activity reflects this request the instant it lands, whether
+  // or not the tab is currently open.
+  if (result.trace) {
+    STATE.planActivityTrace = null;
+    renderObservabilityTrace(result.trace);
+  }
+}
+
+// ─── Undo / Redo ─────────────────────────────────────────────────────────────
+function undoLast() {
+  setLoading(true);
+  google.script.run
+    .withSuccessHandler(function(msg) {
+      setLoading(false);
+      appendMessage('system', '↩ ' + (msg || 'Undone'));
+      toast('Undone ✓', 'success');
+      loadUndoStack();
+    })
+    .withFailureHandler(function(err) {
+      setLoading(false);
+      toast(err.message, 'error');
+    })
+    .undoLastEnterprise();
+}
+
+function redoLast() {
+  setLoading(true);
+  google.script.run
+    .withSuccessHandler(function(msg) {
+      setLoading(false);
+      appendMessage('system', '↪ ' + (msg || 'Redone'));
+      toast('Redone ✓', 'success');
+      loadUndoStack();
+    })
+    .withFailureHandler(function(err) {
+      setLoading(false);
+      toast(err.message, 'error');
+    })
+    .redoLastEnterprise();
+}
+
+// ─── Plan Management ─────────────────────────────────────────────────────────
+function togglePlanning() {
+  STATE.planMode = !STATE.planMode;
+  var btn = document.getElementById('planToggle');
+  var toggle = document.getElementById('planModeToggle');
+  btn.classList.toggle('active', STATE.planMode);
+  if (toggle) toggle.checked = STATE.planMode;
+}
+
+function togglePlanMode(enabled) {
+  STATE.planMode = enabled;
+  var btn = document.getElementById('planToggle');
+  if (btn) btn.classList.toggle('active', enabled);
+}
+
+/**
+ * Live Agent Activity for Plan Mode: each executePlanStep() call is its own
+ * isolated GAS execution and returns its OWN small trace (Planner.js starts
+ * a fresh Observability trace per step unless one is already running — see
+ * executePlanStep()'s docblock). This merges those per-step traces into one
+ * running view client-side, giving genuinely progressive activity across a
+ * multi-step plan even though GAS has no server-push channel to do it for us.
+ */
+function mergeIntoPlanActivityTrace(trace) {
+  if (!trace) return;
+  if (!STATE.planActivityTrace) {
+    STATE.planActivityTrace = {
+      intent: trace.intent, status: 'running', durationMs: 0, totalCostUsd: 0,
+      totalTokens: 0, retryCount: 0, events: [], agentCalls: [], prompts: [],
+      contexts: [], toolCalls: [], verifications: []
+    };
+  }
+  var acc = STATE.planActivityTrace;
+  ['events', 'agentCalls', 'prompts', 'contexts', 'toolCalls', 'verifications'].forEach(function(key) {
+    acc[key] = acc[key].concat(trace[key] || []);
+  });
+  acc.totalCostUsd = Math.round((acc.totalCostUsd + (trace.totalCostUsd || 0)) * 1e6) / 1e6;
+  acc.totalTokens += trace.totalTokens || 0;
+  acc.retryCount += trace.retryCount || 0;
+  acc.durationMs += trace.durationMs || 0;
+  acc.status = trace.status;
+  acc.intent = trace.intent || acc.intent;
+  renderObservabilityTrace(acc);
+}
+
+function displayPlan(plan) {
+  if (STATE.currentPlanId !== plan.planId) STATE.planActivityTrace = null;
+  STATE.activePlan = plan;
+  STATE.currentPlanId = plan.planId;
+
+  document.getElementById('planEmpty').style.display = 'none';
+  var content = document.getElementById('planContent');
+  content.style.display = 'flex';
+
+  // Header
+  var statusLabel = { pending_approval: 'Awaiting approval', auto_approved: 'Auto-approved', approved: 'Approved', executing: 'Executing…', completed: '✓ Completed', failed: '✗ Failed' };
+  document.getElementById('planHeader').innerHTML =
+    '<div class="plan-title">Execution Plan</div>' +
+    '<div class="plan-prompt">' + esc(plan.prompt) + '</div>' +
+    '<div class="plan-meta">' +
+    '  <span class="plan-badge steps">📋 ' + plan.steps.length + ' steps</span>' +
+    '  <span class="plan-badge cost">💰 $' + (plan.totalEstimatedCostUsd || 0).toFixed(4) + '</span>' +
+    '  <span class="plan-badge status">' + (statusLabel[plan.status] || plan.status) + '</span>' +
+    '</div>' +
+    (plan.reasoning ? '<div class="plan-reasoning">' + esc(plan.reasoning) + '</div>' : '');
+
+  // Steps
+  var stepsHtml = plan.steps.map(function(step) {
+    var depHtml = step.dependencies.length > 0
+      ? step.dependencies.map(function(d) { return '<span class="step-dep">↳ ' + d + '</span>'; }).join('')
+      : '';
+    var costHtml = step.estimatedCostUsd > 0
+      ? '<span class="step-cost">$' + step.estimatedCostUsd.toFixed(4) + '</span>'
+      : '';
+    var destructive = step.isDestructive ? '<span style="color:var(--orange);font-size:9px">✏️ writes</span>' : '';
+    return '<div class="step-card ' + step.status + '" id="step-' + step.stepId + '">' +
+      '<div class="step-num">' + (step.status === 'completed' ? '✓' : step.status === 'failed' ? '✗' : step.stepId) + '</div>' +
+      '<div class="step-body">' +
+      '  <div class="step-tool">' + esc(step.tool) + '</div>' +
+      '  <div class="step-reason">' + esc(step.reason) + '</div>' +
+      '  <div class="step-output">' + esc(step.expectedOutput) + '</div>' +
+      '  <div class="step-meta">' + depHtml + costHtml + destructive + '</div>' +
+      '</div></div>';
+  }).join('');
+  document.getElementById('stepsTree').innerHTML = stepsHtml;
+
+  // Actions
+  var actionsHtml = '';
+  if (plan.status === 'pending_approval') {
+    actionsHtml =
+      '<button class="btn btn-danger" onclick="cancelCurrentPlan()">Cancel</button>' +
+      '<button class="btn btn-primary" onclick="approvePlan()">✓ Approve & Run</button>';
+  } else if (plan.status === 'approved' || plan.status === 'auto_approved') {
+    actionsHtml = '<button class="btn btn-primary" onclick="executeNextStep()">▶ Execute</button>';
+  } else if (plan.status === 'executing') {
+    actionsHtml = '<button class="btn btn-ghost" disabled>Executing…</button>';
+  } else if (plan.status === 'completed') {
+    actionsHtml = '<button class="btn btn-ghost" style="color:var(--green)" disabled>✓ Completed</button>';
+  }
+  document.getElementById('planActions').innerHTML = actionsHtml;
+}
+
+function approvePlan() {
+  if (!STATE.currentPlanId) return;
+  google.script.run
+    .withSuccessHandler(function(plan) {
+      STATE.activePlan = plan;
+      displayPlan(plan);
+      toast('Plan approved — click Execute to run', 'success');
+    })
+    .withFailureHandler(function(err) { toast(err.message, 'error'); })
+    .approvePlan(STATE.currentPlanId);
+}
+
+function cancelCurrentPlan() {
+  if (!STATE.currentPlanId) return;
+  google.script.run.cancelPlan(STATE.currentPlanId);
+  STATE.activePlan = null;
+  STATE.currentPlanId = null;
+  document.getElementById('planEmpty').style.display = 'flex';
+  document.getElementById('planContent').style.display = 'none';
+  toast('Plan cancelled', 'info');
+  switchTab('chat');
+}
+
+function executeNextStep() {
+  if (!STATE.currentPlanId) return;
+  setLoading(true);
+  google.script.run
+    .withSuccessHandler(function(result) {
+      setLoading(false);
+      if (result.plan) {
+        displayPlan(result.plan);
+        STATE.activePlan = result.plan;
+      }
+      mergeIntoPlanActivityTrace(result.trace);
+      if (result.step && result.step.result) {
+        // Show tool result in chat
+        var stepResult = result.step;
+        appendToolCard(stepResult.tool, {}, stepResult.status === 'completed' ? 'ok' : 'err');
+      }
+      if (result.error) {
+        toast('Step failed: ' + result.error, 'error');
+        appendMessage('assistant', '❌ Step ' + (result.step ? result.step.stepId : '?') + ' failed: ' + result.error, { isError: true });
+      } else if (result.done) {
+        // Gather all results and display
+        toast('Plan completed ✓', 'success');
+        loadHistory();
+        loadCostSummary();
+        loadUndoStack();
+        // If the completed plan produced a formula, show it
+        if (STATE.activePlan) {
+          var formulaStep = STATE.activePlan.steps.filter(function(s) {
+            return s.result && s.result.formula;
+          })[0];
+          if (formulaStep) {
+            appendMessage('assistant',
+              'Done! ' + (formulaStep.result.explanation || ''),
+              { extras: [{ type: 'formula', value: formulaStep.result.formula }] }
+            );
+          } else {
+            appendMessage('assistant', 'All steps completed successfully.', {});
+          }
+        }
+        switchTab('chat');
+      } else {
+        // More steps — auto-advance
+        setTimeout(executeNextStep, 200);
+      }
+    })
+    .withFailureHandler(function(err) {
+      setLoading(false);
+      toast(err.message, 'error');
+    })
+    .executePlanStep(STATE.currentPlanId);
+}
+
+// ─── History & Undo ──────────────────────────────────────────────────────────
+function loadHistory() {
+  google.script.run
+    .withSuccessHandler(function(items) {
+      if (!items || items.length === 0) return;
+      var html = items.map(function(item) {
+        var icon = { insert_formula: '🔤', write_cells: '✏️', create_chart: '📊', fetch_api: '🌐', generate_pivot: '🔄', generate_dashboard: '🗂️' }[item.type] || '▸';
+        return '<div class="history-item">' +
+          '<span class="history-icon">' + icon + '</span>' +
+          '<div class="history-body">' +
+          '  <div class="history-prompt">' + esc(item.description) + '</div>' +
+          '  <div class="history-meta">' +
+          '    <span class="history-date">' + formatAge(item.timestamp) + '</span>' +
+          (item.metadata && item.metadata.formula ? '<span style="font-family:var(--font-mono);font-size:9px;color:var(--green)">' + esc(item.metadata.formula || '').substring(0,20) + '</span>' : '') +
+          '  </div>' +
+          '</div>' +
+          (item.undoable && !item.undone ? '<div class="history-actions"><button class="icon-btn undo-btn" onclick="undoLast()" title="Undo">↩</button></div>' : '') +
+          '</div>';
+      }).join('');
+      document.getElementById('historyList').innerHTML = html;
+    })
+    .withFailureHandler(function() {})
+    .getRecentOps(10);
+}
+
+function loadUndoStack() {
+  google.script.run
+    .withSuccessHandler(function(stack) {
+      if (!stack || stack.length === 0) {
+        document.getElementById('undoList').innerHTML =
+          '<div style="font-size:10px;color:var(--text-muted);padding:4px 2px">No undo history</div>';
+        return;
+      }
+      var html = stack.slice(0, 5).map(function(item, i) {
+        return '<div class="undo-item">' +
+          '<span class="undo-label">' + esc(item.description) + '</span>' +
+          '<span class="undo-time">' + formatAge(item.timestamp) + '</span>' +
+          (i === 0 ? '<button class="icon-btn undo-btn" onclick="undoLast()" title="Undo this">↩</button>' : '') +
+          '</div>';
+      }).join('');
+      document.getElementById('undoList').innerHTML = html;
+    })
+    .withFailureHandler(function() {})
+    .getUndoStack();
+
+  google.script.run
+    .withSuccessHandler(function(stack) {
+      var el = document.getElementById('redoList');
+      if (!el) return;
+      if (!stack || stack.length === 0) {
+        el.innerHTML = '<div style="font-size:10px;color:var(--text-muted);padding:4px 2px">No redo history</div>';
+        return;
+      }
+      el.innerHTML = '<div class="undo-item"><span class="undo-label">' + esc(stack[0].description) + '</span>' +
+        '<button class="icon-btn undo-btn" onclick="redoLast()" title="Redo this">↪</button></div>';
+    })
+    .withFailureHandler(function() {})
+    .getRedoStack();
+}
+
+// ─── Observability ────────────────────────────────────────────────────────────
+function loadObservability() {
+  google.script.run
+    .withSuccessHandler(function(trace) {
+      renderObservabilityTrace(trace);
+    })
+    .withFailureHandler(function() {})
+    .getObservabilityTrace();
+
+  google.script.run
+    .withSuccessHandler(function(history) {
+      renderObservabilityHistory(history);
+    })
+    .withFailureHandler(function() {})
+    .getObservabilityHistory(10);
+}
+
+function renderObservabilityTrace(trace) {
+  var empty = '<div style="color:var(--text-muted)">No trace yet — send a request first.</div>';
+  if (!trace) {
+    document.getElementById('obsSummary').innerHTML = empty;
+    ['obsTimeline', 'obsAgentTrace', 'obsToolCalls', 'obsVerifications', 'obsPrompts', 'obsContexts'].forEach(function(id) {
+      document.getElementById(id).innerHTML = '';
+    });
+    return;
+  }
+
+  // Summary: Latency, Cost, Retries
+  var statusIcon = trace.status === 'completed' ? '✓' : trace.status === 'failed' ? '✗' : '○';
+  document.getElementById('obsSummary').innerHTML =
+    '<span class="plan-badge status">' + statusIcon + ' ' + esc(trace.status) + '</span> ' +
+    '<span class="plan-badge cost">⏱ ' + (trace.durationMs || 0) + 'ms</span> ' +
+    '<span class="plan-badge cost">💰 $' + (trace.totalCostUsd || 0).toFixed(4) + '</span> ' +
+    '<span class="plan-badge steps">🔁 ' + (trace.retryCount || 0) + ' retries</span>' +
+    (trace.intent ? ' <span class="plan-badge">' + esc(trace.intent) + '</span>' : '');
+
+  // Execution Timeline
+  document.getElementById('obsTimeline').innerHTML = (trace.events || []).map(function(e) {
+    return '<div>+' + e.elapsedMs + 'ms — ' + esc(e.type) + (e.data ? ' <span style="color:var(--text-muted)">' + esc(JSON.stringify(e.data)) + '</span>' : '') + '</div>';
+  }).join('') || '<div style="color:var(--text-muted)">No events recorded.</div>';
+
+  // Agent Trace (Latency)
+  document.getElementById('obsAgentTrace').innerHTML = (trace.agentCalls || []).map(function(a) {
+    return '<div>' + esc(a.agent) + ' (' + esc(a.model || '') + ') — ' + a.durationMs + 'ms</div>';
+  }).join('') || '<div style="color:var(--text-muted)">No agent calls recorded.</div>';
+
+  // Tool Calls
+  document.getElementById('obsToolCalls').innerHTML = (trace.toolCalls || []).map(function(t) {
+    var icon = t.ok ? '✓' : '✗';
+    return '<div>' + icon + ' ' + esc(t.tool_name) + (t.error ? ' — <span style="color:var(--red,#f44)">' + esc(t.error) + '</span>' : '') + '</div>';
+  }).join('') || '<div style="color:var(--text-muted)">No tool calls recorded.</div>';
+
+  // Verification Results
+  document.getElementById('obsVerifications').innerHTML = (trace.verifications || []).map(function(v) {
+    var icon = v.valid ? '✓' : '✗';
+    var detail = (v.errors || []).concat(v.warnings || []).join('; ');
+    return '<div>' + icon + ' ' + esc(v.label) + (detail ? ' — ' + esc(detail) : '') + '</div>';
+  }).join('') || '<div style="color:var(--text-muted)">No verifications recorded.</div>';
+
+  // Prompt Viewer (collapsible — prompts can be long)
+  document.getElementById('obsPrompts').innerHTML = (trace.prompts || []).map(function(p, i) {
+    return '<details style="margin-bottom:4px"><summary>' + esc(p.agent) + ' prompt #' + (i + 1) + '</summary>' +
+      '<div style="white-space:pre-wrap;color:var(--text-muted);margin-top:4px">' + esc(p.systemPrompt) + (p.truncated ? '…' : '') + '</div>' +
+      '<div style="margin-top:4px"><b>User:</b> ' + esc(p.userText) + '</div></details>';
+  }).join('') || '<div style="color:var(--text-muted)">No prompts recorded.</div>';
+
+  // Context Viewer (collapsible)
+  document.getElementById('obsContexts').innerHTML = (trace.contexts || []).map(function(c, i) {
+    return '<details style="margin-bottom:4px"><summary>' + esc(c.label) + ' #' + (i + 1) + '</summary>' +
+      '<div style="white-space:pre-wrap;color:var(--text-muted);margin-top:4px">' + esc(c.text) + (c.truncated ? '…' : '') + '</div></details>';
+  }).join('') || '<div style="color:var(--text-muted)">No context recorded.</div>';
+}
+
+// ─── Current Context ──────────────────────────────────────────────────────────
+function loadCurrentContext() {
+  google.script.run
+    .withSuccessHandler(renderCurrentContext)
+    .withFailureHandler(function() {})
+    .getCurrentContext();
+}
+
+function renderCurrentContext(ctx) {
+  if (!ctx) return;
+
+  document.getElementById('ctxLocation').innerHTML =
+    '<span class="plan-badge steps">📄 ' + esc(ctx.sheetName) + '</span> ' +
+    '<span class="plan-badge status">📍 ' + esc(ctx.activeCell) + '</span> ' +
+    '<span class="plan-badge cost">▦ ' + ctx.dimensions.rows + '×' + ctx.dimensions.cols + '</span>' +
+    (ctx.nearbyFormulaCount > 0 ? ' <span class="plan-badge">ƒ ' + ctx.nearbyFormulaCount + ' nearby</span>' : '');
+
+  document.getElementById('ctxHeaders').innerHTML = (ctx.headers || []).length > 0
+    ? ctx.headers.map(function(h) { return '<div class="chip" style="cursor:default">' + esc(h) + '</div>'; }).join('')
+    : '<span style="color:var(--text-muted)">No headers detected on this sheet.</span>';
+
+  document.getElementById('ctxNamedRanges').innerHTML = (ctx.namedRanges || []).length > 0
+    ? ctx.namedRanges.map(function(nr) {
+        return '<div>' + esc(nr.name) + ' <span style="color:var(--text-muted)">→ ' + esc(nr.range) + '</span></div>';
+      }).join('')
+    : 'None defined.';
+
+  var ranked = ctx.ranked;
+  if (!ranked) {
+    document.getElementById('ctxBudget').textContent = '';
+    document.getElementById('ctxRanked').innerHTML = '<span style="color:var(--text-muted)">Ranked selection unavailable.</span>';
+    return;
+  }
+
+  document.getElementById('ctxBudget').textContent = ranked.totalTokens + ' / ' + ranked.maxTokens + ' tokens';
+  var summary = '<div style="color:var(--text-muted);margin-bottom:6px">' +
+    ranked.selectedCount + ' of ' + ranked.consideredCount + ' chunks selected — highest-scoring signals ' +
+    '(active sheet, referenced formulas, semantic similarity, shared headers, neighboring tables, ' +
+    'dependency graph, previous conversation) win the token budget first.</div>';
+
+  var chunksHtml = ranked.chunks.map(function(c) {
+    var sheetTag = c.sheet ? esc(c.sheet) + ' · ' : '';
+    return '<div class="tool-card ok" style="border-left-color:var(--accent)">' +
+      '<span>▤</span>' +
+      '<span class="tool-name">' + sheetTag + esc(c.type) + '</span>' +
+      '<span class="tool-status" style="color:var(--text-muted)">score ' + c.score.toFixed(2) + ' · ~' + c.tokenEstimate + 'tok</span>' +
+      '</div>' +
+      '<div style="font-size:9px;color:var(--text-muted);padding:2px 8px 6px;font-family:var(--font-mono);white-space:pre-wrap">' + esc(c.preview) + '</div>';
+  }).join('') || '<div style="color:var(--text-muted)">No chunks scored yet — the workbook may be empty.</div>';
+
+  document.getElementById('ctxRanked').innerHTML = summary + chunksHtml;
+}
+
+function renderObservabilityHistory(history) {
+  document.getElementById('obsHistory').innerHTML = (history || []).map(function(h) {
+    var icon = h.status === 'completed' ? '✓' : h.status === 'failed' ? '✗' : '○';
+    return '<div>' + icon + ' ' + esc(h.intent || '') + ' — ' + (h.durationMs || 0) + 'ms, $' +
+      (h.totalCostUsd || 0).toFixed(4) + ', ' + (h.retryCount || 0) + ' retries</div>';
+  }).join('') || '<div style="color:var(--text-muted)">No request history yet.</div>';
+}
+
+// ─── Settings ─────────────────────────────────────────────────────────────────
+function loadSettings() {
+  google.script.run
+    .withSuccessHandler(function(status) {
+      if (!status) return;
+      // Cost stats
+      if (status.cost) {
+        document.getElementById('statCost').textContent = status.cost.formattedTotal || '$0.00';
+        document.getElementById('statTokens').textContent = formatNum(status.cost.totalTokens || 0);
+        document.getElementById('statRequests').textContent = status.cost.requestCount || 0;
+      }
+      // Dry run
+      if (status.dryRunEnabled) {
+        document.getElementById('dryRunToggle').checked = true;
+        document.getElementById('dryRunBanner').classList.add('visible');
+      }
+    })
+    .withFailureHandler(function() {})
+    .getEnterpriseStatus();
+}
+
+function loadCostSummary() {
+  google.script.run
+    .withSuccessHandler(function(summary) {
+      if (!summary) return;
+      document.getElementById('costBadge').textContent = '💰 ' + (summary.formattedSession || '$0.0000');
+    })
+    .withFailureHandler(function() {})
+    .getCostSummary();
+}
+
+function savePref(key, value) {
+  google.script.run.withFailureHandler(function() {}).setPreference(key, value);
+}
+
+function setVerbosity(v) {
+  document.querySelectorAll('.verbosity-opt').forEach(function(el) {
+    el.classList.toggle('active', el.dataset.v === v);
+  });
+  savePref('verbosity', v);
+}
+
+function toggleDryRun(enabled) {
+  google.script.run
+    .withSuccessHandler(function() {
+      document.getElementById('dryRunBanner').classList.toggle('visible', enabled);
+      toast(enabled ? 'Dry run enabled — writes disabled' : 'Dry run disabled', 'info');
+    })
+    .withFailureHandler(function() {})
+    .setDryRun(enabled);
+}
+
+function clearMemory() {
+  if (!confirm('Clear conversation memory? This cannot be undone.')) return;
+  google.script.run
+    .withSuccessHandler(function() { toast('Memory cleared', 'success'); })
+    .withFailureHandler(function(err) { toast(err.message, 'error'); })
+    .clearConversationMemory();
+}
+
+function clearAll() {
+  if (!confirm('Reset ALL memory, history, and preferences? This cannot be undone.')) return;
+  google.script.run
+    .withSuccessHandler(function() { toast('All data reset', 'success'); loadSettings(); })
+    .withFailureHandler(function(err) { toast(err.message, 'error'); })
+    .clearAllMemory();
+}
+
+// ─── Message Building ─────────────────────────────────────────────────────────
+var msgIdCounter = 0;
+
+function appendMessage(role, text, opts) {
+  opts = opts || {};
+  hideEmpty();
+  var msgs = document.getElementById('messages');
+  var id = 'msg-' + (++msgIdCounter);
+  var div = document.createElement('div');
+  div.className = 'message ' + role;
+  div.id = id;
+
+  var bubbleContent = esc(text);
+
+  // Render extras (formula chips, warnings)
+  var extrasHtml = '';
+  (opts.extras || []).forEach(function(extra) {
+    if (extra.type === 'formula') {
+      extrasHtml += '<div class="formula-chip" onclick="copyFormula(this)" title="Click to copy">' + esc(extra.value) + '</div>';
+    } else if (extra.type === 'warning') {
+      extrasHtml += '<div class="bubble-warning">⚠ ' + esc(extra.value) + '</div>';
+    } else if (extra.type === 'error') {
+      extrasHtml += '<div class="bubble-error">✗ ' + esc(extra.value) + '</div>';
+    }
+  });
+
+  var metaHtml = role !== 'system'
+    ? '<div class="msg-meta">' + new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) +
+      (opts.meta ? ' · ' + esc(opts.meta) : '') + '</div>'
+    : '';
+
+  div.innerHTML = '<div class="bubble">' + bubbleContent + extrasHtml + '</div>' + metaHtml;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  return id;
+}
+
+function appendThinking(label) {
+  var msgs = document.getElementById('messages');
+  var id = 'think-' + (++msgIdCounter);
+  var div = document.createElement('div');
+  div.className = 'message assistant';
+  div.id = id;
+  div.innerHTML = '<div class="thinking">' +
+    '<div class="thinking-dots"><span></span><span></span><span></span></div>' +
+    '<span>' + esc(label || 'Thinking…') + '</span>' +
+    '</div>';
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  setStatus('busy');
+  return id;
+}
+
+function removeThinking(id) {
+  var el = document.getElementById(id);
+  if (el) el.remove();
+  setStatus('idle');
+}
+
+function appendToolCard(toolName, args, status) {
+  var msgs = document.getElementById('messages');
+  var last = msgs.querySelector('.message.assistant:last-child .bubble');
+  if (!last) return;
+  var card = document.createElement('div');
+  card.className = 'tool-card ' + (status === 'ok' ? 'ok' : 'err');
+  card.innerHTML = '<span>⚙</span><span class="tool-name">' + esc(toolName) + '</span>' +
+    '<span class="tool-status">' + (status === 'ok' ? '✓ done' : '✗ failed') + '</span>';
+  last.appendChild(card);
+}
+
+// ─── Utilities ────────────────────────────────────────────────────────────────
+function hideEmpty() {
+  var el = document.getElementById('emptyState');
+  if (el) el.style.display = 'none';
+}
+
+function setLoading(active) {
+  STATE.isLoading = active;
+  document.getElementById('sendBtn').disabled = active;
+  setStatus(active ? 'busy' : 'idle');
+}
+
+function setStatus(s) {
+  var dot = document.getElementById('statusDot');
+  dot.className = 'status-dot' + (s !== 'idle' ? ' ' + s : '');
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 100) + 'px';
+}
+
+function handleKeydown(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+}
+
+function fillPrompt(text) {
+  document.getElementById('promptInput').value = text;
+  document.getElementById('promptInput').focus();
+}
+
+function copyFormula(el) {
+  var text = el.textContent;
+  // Apps Script context: navigator.clipboard may not work; use document.execCommand fallback
+  try {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    toast('Copied ✓', 'success');
+  } catch(e) {
+    toast('Press Ctrl+C to copy', 'info');
+  }
+}
+
+function esc(s) {
+  return String(s || '')
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+function formatAge(iso) {
+  try {
+    var diff = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
+    if (diff < 60) return diff + 's ago';
+    if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+    if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+    return Math.floor(diff / 86400) + 'd ago';
+  } catch(e) { return ''; }
+}
+
+function formatNum(n) {
+  if (n >= 1e6) return (n/1e6).toFixed(1) + 'M';
+  if (n >= 1e3) return (n/1e3).toFixed(1) + 'K';
+  return String(n);
+}
+
+function toast(msg, type) {
+  var el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast ' + (type || 'info') + ' show';
+  setTimeout(function() { el.classList.remove('show'); }, 2800);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+\begin{table}
+\caption{SSRF corpus: URLs handled correctly (blocked if $\ast$, allowed otherwise) by the shipped substring filter (v1) and the parse-and-classify validator (v2).}
+\label{tab:ssrf}
+
+\centering\footnotesize
+\begin{adjustbox}{max width=\columnwidth}\begin{tabular}{l r rr}
+\toprule
+\textbf{Category} & \textbf{n} & \textbf{v1} & \textbf{v2} \\
+\midrule
+$\ast$ loopback (dotted) & 6 & 2 & \textbf{6} \\
+$\ast$ loopback (decimal/hex/octal) & 8 & 0 & \textbf{8} \\
+$\ast$ loopback (IPv6) & 7 & 3 & \textbf{7} \\
+$\ast$ unspecified & 4 & 3 & \textbf{4} \\
+$\ast$ localhost names & 5 & 5 & \textbf{5} \\
+$\ast$ private v4 (dotted) & 7 & 7 & \textbf{7} \\
+$\ast$ private v4 (encoded) & 7 & 0 & \textbf{7} \\
+$\ast$ link-local / metadata & 12 & 4 & \textbf{12} \\
+$\ast$ IPv6-mapped / translated private & 6 & 2 & \textbf{6} \\
+$\ast$ userinfo / authority tricks & 6 & 6 & \textbf{6} \\
+$\ast$ wildcard-DNS names for private IPs & 6 & 3 & \textbf{6} \\
+$\ast$ internal-only names & 6 & 0 & \textbf{6} \\
+$\ast$ non-http schemes & 6 & 6 & \textbf{6} \\
+$\ast$ unicode / formatting & 6 & 3 & \textbf{6} \\
+public hosts & 8 & 8 & \textbf{8} \\
+public IPs & 5 & 5 & \textbf{5} \\
+boundary public addresses & 12 & 12 & \textbf{12} \\
+public IPs with private-looking digits & 7 & 4 & \textbf{7} \\
+benign URLs with suspicious substrings & 12 & 4 & \textbf{12} \\
+IDN / unusual but public & 4 & 4 & \textbf{4} \\
+\bottomrule
+\end{tabular}\end{adjustbox}
+\end{table}
